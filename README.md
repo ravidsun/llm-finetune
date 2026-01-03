@@ -376,6 +376,21 @@ training:
 pip install --upgrade langchain langchain-core langchain-community
 ```
 
+## Phase-by-Phase Guides
+
+For detailed, step-by-step instructions organized by phase:
+
+📖 **[Complete Documentation](docs/README.md)** - Start here for guided walkthrough
+
+### Individual Phases:
+1. **[Phase 1: Environment Setup](docs/PHASE1_SETUP.md)** - Install dependencies and configure RunPod
+2. **[Phase 2: Data Preparation](docs/PHASE2_DATA_PREPARATION.md)** - Process data with LangChain
+3. **[Phase 3: Training](docs/PHASE3_TRAINING.md)** - Fine-tune your model
+4. **[Phase 4: Evaluation & Export](docs/PHASE4_EVALUATION.md)** - Test and export model
+5. **[Phase 5: Deployment](docs/PHASE5_DEPLOYMENT.md)** - Deploy to production
+
+Each phase includes troubleshooting, best practices, and time estimates.
+
 ## License
 
 MIT License - see LICENSE file for details.
