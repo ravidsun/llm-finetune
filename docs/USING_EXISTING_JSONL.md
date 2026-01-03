@@ -2,6 +2,32 @@
 
 If you already have pre-processed JSONL training files, you can use them directly without data preparation.
 
+## Standard Directory Structure
+
+We recommend using `/workspace/data/input` as the standard location for your existing JSONL files:
+
+**RunPod/Local:**
+```
+/workspace/
+├── data/
+│   └── input/              ← Place your JSONL files here
+│       ├── train.jsonl
+│       └── test.jsonl      (optional)
+├── processed_data/         ← Processed output goes here
+└── output/                 ← Training output (model weights)
+```
+
+**Google Colab:**
+```
+/content/
+├── data/
+│   └── input/              ← Place your JSONL files here
+│       ├── train.jsonl
+│       └── test.jsonl      (optional)
+├── processed_data/         ← Processed output goes here
+└── output/                 ← Training output (model weights)
+```
+
 ## Quick Start
 
 ### Option 1: Skip Data Preparation Entirely
@@ -10,12 +36,26 @@ If your JSONL file is already in the correct format, you can skip the preparatio
 
 #### Step 1: Place Your JSONL File
 
+**RunPod/Local:**
 ```bash
 # Create processed_data directory
-mkdir -p processed_data
+mkdir -p /workspace/processed_data
 
 # Copy your existing JSONL file
-cp /path/to/your/file.jsonl processed_data/train.jsonl
+cp /path/to/your/file.jsonl /workspace/processed_data/train.jsonl
+```
+
+**Google Colab:**
+```bash
+# Create processed_data directory
+!mkdir -p processed_data
+
+# Upload your file
+from google.colab import files
+uploaded = files.upload()
+
+# Move to processed_data
+!mv *.jsonl processed_data/train.jsonl
 ```
 
 #### Step 2: Create Minimal Config
@@ -29,8 +69,10 @@ model:
 
 data:
   # Point to where your JSONL already is
-  input_path: "processed_data"
-  output_path: "processed_data"
+  # RunPod/Local: use /workspace/processed_data
+  # Colab: use processed_data (relative path)
+  input_path: "/workspace/processed_data"  # or "processed_data" for Colab
+  output_path: "/workspace/processed_data"  # or "processed_data" for Colab
   input_type: "json"
 
   # Disable LangChain processing since data is ready
@@ -64,13 +106,27 @@ If you want to optionally apply augmentation or other processing to existing JSO
 
 ### Step 1: Place Files in Input Directory
 
+**RunPod/Local:**
 ```bash
-# Create data directory
-mkdir -p data
+# Create input directory
+mkdir -p /workspace/data/input
 
 # Copy your JSONL files
-cp /path/to/your/train.jsonl data/
-cp /path/to/your/test.jsonl data/  # Optional
+cp /path/to/your/train.jsonl /workspace/data/input/
+cp /path/to/your/test.jsonl /workspace/data/input/  # Optional
+```
+
+**Google Colab:**
+```bash
+# Create input directory
+!mkdir -p data/input
+
+# Upload your files
+from google.colab import files
+uploaded = files.upload()
+
+# Move to input directory
+!mv *.jsonl data/input/
 ```
 
 ### Step 2: Configure for Direct Use
@@ -83,9 +139,12 @@ model:
   use_qlora: true
 
 data:
-  input_path: "data"              # Your JSONL files are here
-  output_path: "processed_data"   # Where to save after processing
-  input_type: "json"              # Important: use "json" for JSONL
+  # Standard input directory for existing JSONL files
+  # RunPod/Local: /workspace/data/input
+  # Colab: data/input (relative path)
+  input_path: "/workspace/data/input"   # or "data/input" for Colab
+  output_path: "/workspace/processed_data"   # or "processed_data" for Colab
+  input_type: "json"                    # Important: use "json" for JSONL
 
   langchain:
     enabled: false  # Disable document processing

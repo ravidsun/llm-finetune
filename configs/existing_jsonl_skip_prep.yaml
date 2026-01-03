@@ -16,8 +16,9 @@ model:
 data:
   # IMPORTANT: Point both input and output to the same directory
   # This allows training to use the file directly without preparation
-  input_path: "processed_data"
-  output_path: "processed_data"
+  # Use /workspace/processed_data for RunPod/Local, or processed_data for Colab
+  input_path: "/workspace/processed_data"
+  output_path: "/workspace/processed_data"
 
   input_type: "json"
 
@@ -46,15 +47,29 @@ training:
   logging_steps: 10
   report_to: []
 
-# USAGE:
+# USAGE (RunPod/Local):
 # 1. Place your pre-formatted JSONL directly in processed_data/:
-#    mkdir -p processed_data
-#    cp your-ready-file.jsonl processed_data/train.jsonl
+#    mkdir -p /workspace/processed_data
+#    cp your-ready-file.jsonl /workspace/processed_data/train.jsonl
 #
 # 2. SKIP prepare-data step entirely
 #
 # 3. Train directly:
 #    python -m finetune_project train --config configs/existing_jsonl_skip_prep.yaml
+#
+# COLAB USAGE:
+# 1. Use relative path - update config:
+#    input_path: "processed_data"
+#    output_path: "processed_data"
+#
+# 2. Place your file:
+#    !mkdir -p processed_data
+#    from google.colab import files
+#    uploaded = files.upload()
+#    !mv *.jsonl processed_data/train.jsonl
+#
+# 3. Train directly (skip prepare-data):
+#    !python -m finetune_project train --config configs/existing_jsonl_skip_prep.yaml
 #
 # JSONL FORMAT REQUIRED:
 # {"instruction": "Question here", "input": "", "output": "Answer here"}

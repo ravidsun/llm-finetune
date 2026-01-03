@@ -15,10 +15,11 @@ model:
 
 data:
   # INPUT: Place your existing JSONL file(s) in this directory
-  input_path: "data"
+  # Standard path: /workspace/data/input (RunPod/Local) or data/input (Colab)
+  input_path: "/workspace/data/input"
 
   # OUTPUT: Processed data will be saved here
-  output_path: "processed_data"
+  output_path: "/workspace/processed_data"
 
   # TYPE: Use "json" for JSONL files
   input_type: "json"
@@ -74,11 +75,23 @@ training:
   eval_steps: 100
 
 # USAGE:
-# 1. Place your JSONL file in data/ directory:
-#    cp your-file.jsonl data/train.jsonl
+# 1. Create directory and place your JSONL file:
+#    mkdir -p /workspace/data/input
+#    cp your-file.jsonl /workspace/data/input/train.jsonl
 #
 # 2. Prepare data (validates and optionally augments):
 #    python -m finetune_project prepare-data --config configs/existing_jsonl.yaml
 #
 # 3. Train:
 #    python -m finetune_project train --config configs/existing_jsonl.yaml
+#
+# COLAB USAGE:
+# 1. Create directory and upload:
+#    !mkdir -p data/input
+#    from google.colab import files
+#    uploaded = files.upload()
+#    !mv your-file.jsonl data/input/train.jsonl
+#
+# 2. Update config paths to relative:
+#    input_path: "data/input"
+#    output_path: "processed_data"
