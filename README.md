@@ -2,6 +2,8 @@
 
 A production-ready pipeline for fine-tuning open-source LLMs (Llama, Qwen, Mistral) on RunPod with **LangChain integration** for document processing, prompt templating, and optional LLM-based QA generation.
 
+> **📊 Visual Guides**: Check out [ARCHITECTURE.md](ARCHITECTURE.md) for ASCII diagrams and [DIAGRAMS.md](DIAGRAMS.md) for interactive Mermaid flowcharts to understand the project structure.
+
 ## Features
 
 ### Core Features
@@ -28,8 +30,8 @@ A production-ready pipeline for fine-tuning open-source LLMs (Llama, Qwen, Mistr
 
 ```bash
 # Clone the repository
-git clone https://github.com/example/llm-finetune-langchain.git
-cd llm-finetune-langchain
+git clone https://github.com/ravidsun/llm-finetune.git
+cd llm-finetune
 
 # Install core dependencies
 pip install -e .
@@ -237,8 +239,8 @@ export WANDB_API_KEY=your_wandb_key
 ```bash
 # Clone and setup
 cd /workspace
-git clone https://github.com/example/llm-finetune-langchain.git
-cd llm-finetune-langchain
+git clone https://github.com/ravidsun/llm-finetune.git
+cd llm-finetune
 bash scripts/setup.sh
 
 # Start training in tmux
