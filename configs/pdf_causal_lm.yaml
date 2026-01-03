@@ -1,0 +1,93 @@
+# Configuration for Continued Pretraining from PDF Documents
+# Uses LangChain for document loading and text splitting
+# Creates text-only examples for causal LM training (NO QA generation)
+
+model:
+  model_name_or_path: "Qwen/Qwen2.5-7B"  # Base model (not Instruct)
+  trust_remote_code: true
+  torch_dtype: "auto"
+  attn_implementation: "flash_attention_2"
+
+training:
+  output_dir: "/workspace/output/pdf-causal"
+  seed: 42
+  num_train_epochs: 1
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 16
+  learning_rate: 1.0e-4
+  warmup_ratio: 0.05
+  lr_scheduler_type: "cosine"
+  weight_decay: 0.01
+  bf16: true
+  gradient_checkpointing: true
+  logging_steps: 10
+  save_steps: 500
+  eval_steps: 500
+  save_total_limit: 2
+  evaluation_strategy: "steps"
+  optim: "paged_adamw_8bit"
+  max_seq_length: 4096
+  packing: true  # Enable packing for efficient text training
+  report_to: "none"
+
+peft:
+  enabled: true
+  method: "lora"
+  r: 32
+  lora_alpha: 64
+  lora_dropout: 0.05
+  bias: "none"
+  task_type: "CAUSAL_LM"
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+
+quantization:
+  enabled: true
+  load_in_4bit: true
+  bnb_4bit_compute_dtype: "bfloat16"
+  bnb_4bit_quant_type: "nf4"
+  bnb_4bit_use_double_quant: true
+
+data:
+  input_path: "/workspace/data/pdfs"
+  input_type: "pdf"
+  output_dataset_path: "/workspace/processed_data"
+  train_split: 0.95
+  eval_split: 0.05
+  shuffle: true
+  
+  pdf:
+    extraction_backend: "pymupdf"
+    chunk_size: 2048
+    chunk_overlap: 256
+    min_chunk_size: 200
+    strip_headers_footers: true
+    clean_whitespace: true
+    splitter_type: "recursive"
+    separators:
+      - "\n\n"
+      - "\n"
+      - ". "
+      - " "
+  
+  langchain:
+    enabled: true
+    # QA Generation is OFF for causal LM
+    qa_generation_enabled: false
+  
+  augmentation:
+    enabled: false  # No augmentation for causal LM
+
+tracking:
+  wandb_enabled: false
+  wandb_project: "pdf-pretraining"
+
+runpod:
+  volume_path: "/workspace"
+  hf_cache_dir: "/workspace/hf_cache"

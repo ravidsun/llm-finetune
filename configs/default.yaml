@@ -1,0 +1,134 @@
+# Default Configuration for LLM Fine-Tuning with LangChain
+# Copy this file and modify for your use case
+
+# Model Configuration
+model:
+  model_name_or_path: "Qwen/Qwen2.5-7B-Instruct"
+  tokenizer_name: null
+  trust_remote_code: true
+  torch_dtype: "auto"
+  attn_implementation: null  # flash_attention_2, sdpa, eager
+
+# Training Configuration
+training:
+  output_dir: "/workspace/output"
+  seed: 42
+  max_steps: -1
+  num_train_epochs: 3
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  gradient_accumulation_steps: 8
+  learning_rate: 2.0e-4
+  warmup_ratio: 0.03
+  lr_scheduler_type: "cosine"
+  weight_decay: 0.01
+  fp16: false
+  bf16: true
+  gradient_checkpointing: true
+  logging_steps: 10
+  save_steps: 100
+  eval_steps: 100
+  save_total_limit: 3
+  evaluation_strategy: "steps"
+  optim: "paged_adamw_8bit"
+  max_seq_length: 2048
+  max_grad_norm: 0.3
+  group_by_length: true
+  packing: true
+  report_to: "none"
+  dataloader_num_workers: 4
+  remove_unused_columns: false
+
+# PEFT/LoRA Configuration
+peft:
+  enabled: true
+  method: "lora"
+  r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  bias: "none"
+  task_type: "CAUSAL_LM"
+  target_modules: null  # Auto-detect
+  modules_to_save: null
+
+# Quantization Configuration
+quantization:
+  enabled: true
+  load_in_4bit: true
+  load_in_8bit: false
+  bnb_4bit_compute_dtype: "bfloat16"
+  bnb_4bit_quant_type: "nf4"
+  bnb_4bit_use_double_quant: true
+
+# Data Configuration
+data:
+  input_path: "/workspace/data"
+  input_type: "auto"  # auto, json, pdf, docx
+  output_dataset_path: "/workspace/processed_data"
+  train_split: 0.9
+  eval_split: 0.1
+  shuffle: true
+  chat_template: null
+  system_message: null
+  
+  # JSON settings
+  json:
+    schema: "auto"
+    instruction_field: "instruction"
+    input_field: "input"
+    output_field: "output"
+    messages_field: "messages"
+    system_field: "system"
+    prompt_field: "prompt"
+    completion_field: "completion"
+    text_field: "text"
+  
+  # PDF settings (LangChain-powered)
+  pdf:
+    extraction_backend: "pymupdf"  # pymupdf, pdfplumber, unstructured
+    chunk_size: 1024
+    chunk_overlap: 128
+    min_chunk_size: 100
+    strip_headers_footers: true
+    clean_whitespace: true
+    splitter_type: "recursive"  # recursive, character, token
+    separators: null  # Custom separators
+  
+  # LangChain settings
+  langchain:
+    enabled: true
+    loader_kwargs: {}
+    # QA Generation (OFF by default)
+    qa_generation_enabled: false
+    qa_llm_provider: "anthropic"
+    qa_model_name: "claude-3-haiku-20240307"
+    qa_pairs_per_chunk: 3
+    qa_temperature: 0.3
+    qa_max_tokens: 1024
+    prompt_template_dir: null
+    default_system_message: null
+  
+  # Augmentation settings (OFF by default)
+  augmentation:
+    enabled: false
+    instruction_variations: true
+    num_instruction_variations: 2
+    case_variations: false
+    whitespace_normalization: true
+    use_paraphrase_templates: true
+    shuffle_conversation_order: false
+
+# Experiment Tracking
+tracking:
+  wandb_enabled: false
+  wandb_project: "llm-finetune"
+  wandb_entity: null
+  wandb_run_name: null
+  wandb_tags: []
+
+# RunPod paths
+runpod:
+  volume_path: "/workspace"
+  hf_cache_dir: "/workspace/hf_cache"
+  data_path: "/workspace/data"
+  output_path: "/workspace/output"

@@ -1,0 +1,127 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "finetune-project"
+version = "2.0.0"
+description = "Production-ready LLM fine-tuning pipeline with LangChain integration for RunPod"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "ML Engineer", email = "engineer@example.com"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    # Core ML
+    "torch>=2.0.0",
+    "transformers>=4.40.0",
+    "datasets>=2.18.0",
+    "accelerate>=0.27.0",
+    "peft>=0.10.0",
+    "trl>=0.8.0",
+    "bitsandbytes>=0.43.0",
+    "safetensors>=0.4.0",
+    
+    # LangChain ecosystem (latest stable 0.2.x+)
+    "langchain>=0.2.0",
+    "langchain-core>=0.2.0",
+    "langchain-community>=0.2.0",
+    "langchain-text-splitters>=0.2.0",
+    
+    # Document loaders
+    "pymupdf>=1.24.0",
+    "pdfplumber>=0.10.0",
+    "unstructured>=0.12.0",
+    "python-docx>=1.1.0",
+    
+    # Tokenization
+    "sentencepiece>=0.1.99",
+    "protobuf>=3.20.0",
+    "tiktoken>=0.6.0",
+    
+    # CLI and utilities
+    "typer[all]>=0.9.0",
+    "rich>=13.0.0",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0.0",
+    
+    # Experiment tracking
+    "wandb>=0.16.0",
+    
+    # Additional utilities
+    "einops>=0.7.0",
+    "scipy>=1.11.0",
+    "jinja2>=3.1.0",
+]
+
+[project.optional-dependencies]
+# Optional: Claude API for QA generation
+anthropic = [
+    "langchain-anthropic>=0.1.0",
+    "anthropic>=0.25.0",
+]
+# Optional: OpenAI API for QA generation
+openai = [
+    "langchain-openai>=0.1.0",
+    "openai>=1.0.0",
+]
+# All LLM providers
+llm = [
+    "langchain-anthropic>=0.1.0",
+    "anthropic>=0.25.0",
+    "langchain-openai>=0.1.0",
+    "openai>=1.0.0",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-asyncio>=0.23.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+]
+flash-attn = [
+    "flash-attn>=2.5.0",
+]
+
+[project.scripts]
+finetune = "finetune_project.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/example/llm-finetune-langchain"
+Documentation = "https://github.com/example/llm-finetune-langchain#readme"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+finetune_project = ["py.typed", "prompts/*.yaml", "prompts/*.jinja2"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I", "N", "W"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --tb=short"
+asyncio_mode = "auto"

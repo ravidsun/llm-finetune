@@ -1,0 +1,109 @@
+# Configuration for Vedic Astrology (Jyotish) Fine-Tuning
+# Optimized for Sanskrit terminology with diacritical marks
+# Uses Qwen2.5 for excellent multilingual tokenization
+
+model:
+  model_name_or_path: "Qwen/Qwen2.5-14B-Instruct"
+  trust_remote_code: true
+  torch_dtype: "auto"
+  attn_implementation: "flash_attention_2"
+
+training:
+  output_dir: "/workspace/output/vedic-astrology"
+  seed: 42
+  num_train_epochs: 3
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 8
+  learning_rate: 2.0e-4
+  warmup_ratio: 0.03
+  lr_scheduler_type: "cosine"
+  weight_decay: 0.01
+  bf16: true
+  gradient_checkpointing: true
+  logging_steps: 10
+  save_steps: 100
+  eval_steps: 100
+  save_total_limit: 2
+  evaluation_strategy: "steps"
+  optim: "paged_adamw_8bit"
+  max_seq_length: 2048
+  packing: false
+  report_to: "none"
+
+peft:
+  enabled: true
+  method: "lora"
+  r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  bias: "none"
+  task_type: "CAUSAL_LM"
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+
+quantization:
+  enabled: true
+  load_in_4bit: true
+  bnb_4bit_compute_dtype: "bfloat16"
+  bnb_4bit_quant_type: "nf4"
+  bnb_4bit_use_double_quant: true
+
+data:
+  input_path: "/workspace/data/training_data.jsonl"
+  input_type: "json"
+  output_dataset_path: "/workspace/processed_data"
+  train_split: 0.9
+  eval_split: 0.1
+  shuffle: true
+  
+  # Vedic astrology system message
+  system_message: |
+    You are a knowledgeable Vedic astrology (Jyotiṣa) expert. 
+    Answer questions accurately based on traditional Jyotiṣa principles.
+    Use proper Sanskrit terminology with correct diacritical marks 
+    (ā, ī, ū, ṛ, ṣ, ṭ, ḍ, ṇ) when appropriate.
+    
+  json:
+    schema: "alpaca"
+    instruction_field: "instruction"
+    input_field: "input"
+    output_field: "output"
+  
+  pdf:
+    extraction_backend: "pymupdf"
+    chunk_size: 1024
+    chunk_overlap: 128
+    min_chunk_size: 100
+    splitter_type: "recursive"
+  
+  langchain:
+    enabled: true
+    # QA Generation OFF by default (use your pre-generated JSONL)
+    qa_generation_enabled: false
+    qa_llm_provider: "anthropic"
+    qa_model_name: "claude-3-haiku-20240307"
+    qa_pairs_per_chunk: 3
+    default_system_message: "You are a Vedic astrology expert."
+  
+  # Enable augmentation to increase dataset size
+  augmentation:
+    enabled: true
+    instruction_variations: true
+    num_instruction_variations: 2
+    whitespace_normalization: true
+    use_paraphrase_templates: true
+    case_variations: false  # Preserve Sanskrit diacritics
+
+tracking:
+  wandb_enabled: false
+  wandb_project: "vedic-astrology-finetune"
+
+runpod:
+  volume_path: "/workspace"
+  hf_cache_dir: "/workspace/hf_cache"

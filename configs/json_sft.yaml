@@ -1,0 +1,89 @@
+# Configuration for Supervised Fine-Tuning from JSON Data
+# Includes LangChain prompt templating and optional augmentation
+
+model:
+  model_name_or_path: "Qwen/Qwen2.5-14B-Instruct"
+  trust_remote_code: true
+  torch_dtype: "auto"
+  attn_implementation: "flash_attention_2"
+
+training:
+  output_dir: "/workspace/output/json-sft"
+  seed: 42
+  num_train_epochs: 3
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 8
+  learning_rate: 2.0e-4
+  warmup_ratio: 0.03
+  lr_scheduler_type: "cosine"
+  weight_decay: 0.01
+  bf16: true
+  gradient_checkpointing: true
+  logging_steps: 10
+  save_steps: 200
+  eval_steps: 200
+  save_total_limit: 2
+  evaluation_strategy: "steps"
+  optim: "paged_adamw_8bit"
+  max_seq_length: 2048
+  packing: false
+  report_to: "none"
+
+peft:
+  enabled: true
+  method: "lora"
+  r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  bias: "none"
+  task_type: "CAUSAL_LM"
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+
+quantization:
+  enabled: true
+  load_in_4bit: true
+  bnb_4bit_compute_dtype: "bfloat16"
+  bnb_4bit_quant_type: "nf4"
+  bnb_4bit_use_double_quant: true
+
+data:
+  input_path: "/workspace/data/training.jsonl"
+  input_type: "json"
+  output_dataset_path: "/workspace/processed_data"
+  train_split: 0.9
+  eval_split: 0.1
+  shuffle: true
+  system_message: "You are a helpful AI assistant."
+  
+  json:
+    schema: "auto"
+    instruction_field: "instruction"
+    input_field: "input"
+    output_field: "output"
+  
+  langchain:
+    enabled: true
+    qa_generation_enabled: false
+  
+  # Enable augmentation for more training data
+  augmentation:
+    enabled: true
+    instruction_variations: true
+    num_instruction_variations: 2
+    whitespace_normalization: true
+    use_paraphrase_templates: true
+
+tracking:
+  wandb_enabled: false
+  wandb_project: "json-sft-experiment"
+
+runpod:
+  volume_path: "/workspace"
+  hf_cache_dir: "/workspace/hf_cache"
