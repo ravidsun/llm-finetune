@@ -4,9 +4,8 @@ Complete step-by-step guides for fine-tuning and deploying LLMs.
 
 ## Quick Links
 
-- 🚀 **[Google Colab Phase Guide](PHASE_COLAB.md)** - Complete step-by-step Colab walkthrough
-- 📓 **[Colab Notebook](../notebooks/llm_finetune_colab.ipynb)** - Ready-to-run notebook
-- 📖 **[Colab Reference Guide](COLAB_GUIDE.md)** - Comprehensive Colab documentation
+- 🚀 **[Google Colab Guide](COLAB_GUIDE.md)** - Complete Colab guide with copy-paste cells
+- 📓 **[Colab Notebook](../notebooks/llm_finetune_colab.ipynb)** - Ready-to-run notebook (alternative)
 - 🔧 **[Troubleshooting Guide](TROUBLESHOOTING.md)** - Solutions for common errors
 - 📂 **[Using Existing JSONL Files](USING_EXISTING_JSONL.md)** - Skip data prep with existing data
 - 🖥️ **RunPod/Local Setup** - Follow phase-by-phase guides below
@@ -17,15 +16,15 @@ This documentation is organized into phases covering different platforms and sta
 
 ## Google Colab (Beginner-Friendly)
 
-### [Google Colab: Complete Guide](PHASE_COLAB.md)
+### [Google Colab: Complete Guide](COLAB_GUIDE.md)
 ⏱️ Time: 45-90 minutes (including training)
 💰 Cost: FREE
 
-**All-in-one Colab guide** for fine-tuning in your browser.
+**Comprehensive Colab guide** with 5 copy-paste cells to get started instantly!
 
 **You'll learn**:
-- Opening and configuring Colab notebook
-- Enabling free GPU (T4)
+- Copy-paste setup cells (fastest method)
+- Step-by-step manual setup
 - Uploading and preparing data
 - Training with progress monitoring
 - Testing and downloading your model
@@ -35,6 +34,8 @@ This documentation is organized into phases covering different platforms and sta
 - ✅ Fine-tuned 7B model
 - ✅ Model saved to Google Drive
 - ✅ Ready to deploy or use
+
+**Alternative**: [PHASE_COLAB.md](PHASE_COLAB.md) - Phase-by-phase walkthrough
 
 ---
 
