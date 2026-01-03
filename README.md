@@ -419,6 +419,18 @@ For detailed, step-by-step instructions organized by phase:
 
 Each phase includes troubleshooting, best practices, and time estimates.
 
+## Troubleshooting
+
+Having issues? Check our comprehensive troubleshooting guide:
+
+- **[Troubleshooting Guide](docs/TROUBLESHOOTING.md)** - Solutions for common errors
+  - GitHub authentication errors (Colab)
+  - CUDA out of memory
+  - Training issues
+  - Data format problems
+  - Installation errors
+  - Platform-specific fixes
+
 ## License
 
 MIT License - see LICENSE file for details.

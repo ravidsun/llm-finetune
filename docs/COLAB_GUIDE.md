@@ -546,6 +546,57 @@ print("Model uploaded to Hugging Face!")
 
 ## Troubleshooting
 
+### GitHub Authentication Error
+
+**Error**: `fatal: could not read Username for 'https://github.com': No such device or address`
+
+**Solution**: Set up GitHub authentication with Personal Access Token:
+
+```python
+# 1. Create a Personal Access Token first:
+#    - Go to: https://github.com/settings/tokens
+#    - Click "Generate new token (classic)"
+#    - Name: "Colab Access"
+#    - Select scope: "repo" (full control of private repositories)
+#    - Click "Generate token" and COPY IT (you won't see it again!)
+
+# 2. Set up authentication in Colab
+import os
+from getpass import getpass
+
+# Enter your GitHub username
+github_username = input("Enter your GitHub username: ")
+
+# Enter your Personal Access Token (input will be hidden)
+print("Enter your GitHub Personal Access Token:")
+print("(Create one at: https://github.com/settings/tokens)")
+github_token = getpass("Token: ")
+
+# Configure git credentials
+!git config --global user.name "{github_username}"
+!git config --global user.email "your-email@example.com"  # Update with your email
+
+# Set up credential helper with token
+!git remote set-url origin https://{github_username}:{github_token}@github.com/ravidsun/llm-finetune.git
+
+# Now you can push successfully
+!git push
+
+print("✅ GitHub authentication configured!")
+```
+
+**Alternative**: Skip GitHub push and save to Drive instead:
+
+```python
+# Instead of pushing to GitHub, save directly to Google Drive
+!cp -r output /content/drive/MyDrive/llm-finetune/
+
+# Or download to your computer
+from google.colab import files
+!zip -r output.zip output
+files.download('output.zip')
+```
+
 ### Out of Memory
 
 ```python

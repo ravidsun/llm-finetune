@@ -7,6 +7,8 @@ Complete step-by-step guides for fine-tuning and deploying LLMs.
 - 🚀 **[Google Colab Phase Guide](PHASE_COLAB.md)** - Complete step-by-step Colab walkthrough
 - 📓 **[Colab Notebook](../notebooks/llm_finetune_colab.ipynb)** - Ready-to-run notebook
 - 📖 **[Colab Reference Guide](COLAB_GUIDE.md)** - Comprehensive Colab documentation
+- 🔧 **[Troubleshooting Guide](TROUBLESHOOTING.md)** - Solutions for common errors
+- 📂 **[Using Existing JSONL Files](USING_EXISTING_JSONL.md)** - Skip data prep with existing data
 - 🖥️ **RunPod/Local Setup** - Follow phase-by-phase guides below
 
 ## Overview
@@ -171,9 +173,21 @@ Deploy your model for production use.
 
 ## Additional Resources
 
+### Troubleshooting & Help
+- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Comprehensive error solutions
+  - GitHub authentication (Colab)
+  - CUDA out of memory errors
+  - Training and data issues
+  - Installation problems
+  - Platform-specific fixes
+
 ### Architecture & Diagrams
 - [ARCHITECTURE.md](../ARCHITECTURE.md) - ASCII diagrams and technical architecture
 - [DIAGRAMS.md](../DIAGRAMS.md) - Mermaid flowcharts (renders on GitHub)
+
+### Data Guides
+- [USING_EXISTING_JSONL.md](USING_EXISTING_JSONL.md) - Use pre-existing JSONL files
+- Phase 2 guide covers creating JSONL from scratch
 
 ### Project Files
 - [README.md](../README.md) - Main project README
@@ -181,6 +195,9 @@ Deploy your model for production use.
 - [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md) - Community guidelines
 
 ### Example Configs
+- `configs/existing_jsonl.yaml` - Use existing JSONL files
+- `configs/existing_jsonl_colab.yaml` - Colab with existing JSONL
+- `configs/existing_jsonl_skip_prep.yaml` - Skip all data prep
 - `configs/json_sft.yaml` - JSON supervised fine-tuning
 - `configs/pdf_causal_lm.yaml` - PDF continued pretraining
 - `configs/qa_generation.yaml` - PDF to Q&A generation
