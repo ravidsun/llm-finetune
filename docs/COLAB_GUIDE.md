@@ -25,7 +25,22 @@ Google Colab provides free GPU access (T4) and paid options (A100, V100) that wo
 
 ## Quick Start
 
-### Option 1: Use Pre-made Notebook (Easiest)
+### Option 1: Copy-Paste Cells (Fastest!) ⚡
+
+**NEW**: Just copy ready-to-use cells into a new Colab notebook!
+
+👉 **[COLAB_QUICKSTART_CELL.md](COLAB_QUICKSTART_CELL.md)** - Copy-paste complete setup
+
+Includes:
+- Complete setup cell (installs everything)
+- Data upload cell
+- Config creation cell
+- Training cell
+- Save model cell
+
+**5 cells = Complete fine-tuning!**
+
+### Option 2: Use Pre-made Notebook
 
 1. Open the notebook: [llm_finetune_colab.ipynb](../notebooks/llm_finetune_colab.ipynb)
 2. Click "Open in Colab" badge
@@ -33,7 +48,7 @@ Google Colab provides free GPU access (T4) and paid options (A100, V100) that wo
 4. Run cells sequentially
 5. Download trained model before session ends
 
-### Option 2: Manual Setup (Full Control)
+### Option 3: Manual Setup (Full Control)
 
 Follow the steps below for complete control over the process.
 
@@ -101,14 +116,20 @@ print(f"VRAM: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB")
 ```python
 # Clone the repository
 !git clone https://github.com/ravidsun/llm-finetune.git
+
+# Change to project directory
 %cd llm-finetune
 
 # Install the package
 !pip install -q -e .
 
-# Verify
+# Verify installation
 !python -m finetune_project --help
 ```
+
+**Troubleshooting**:
+- If you see `[Errno 2] No such file or directory: 'llm-finetune'`, the clone failed. Check internet connection and retry.
+- If you already cloned: `%cd llm-finetune` to enter the directory
 
 ### Step 4: Mount Google Drive (Optional but Recommended)
 

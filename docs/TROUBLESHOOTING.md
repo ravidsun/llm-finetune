@@ -102,6 +102,50 @@ git remote -v
 git remote set-url origin https://github.com/ravidsun/llm-finetune.git
 ```
 
+### Error: `[Errno 2] No such file or directory: 'llm-finetune'`
+
+**Platform**: Google Colab
+
+**Cause**: Repository not cloned yet, or you're not in the correct directory.
+
+**Solution 1: Clone Repository First**
+
+```python
+# Clone the repository (run this first!)
+!git clone https://github.com/ravidsun/llm-finetune.git
+
+# Change to project directory
+%cd llm-finetune
+
+# Verify you're in the right directory
+!pwd
+!ls -la
+```
+
+**Solution 2: Navigate to Existing Directory**
+
+```python
+# If already cloned, just change directory
+%cd /content/llm-finetune
+
+# Or from subdirectory
+%cd ..
+%cd llm-finetune
+```
+
+**Solution 3: Check Current Location**
+
+```python
+# See where you are
+!pwd
+
+# See what's in current directory
+!ls -la
+
+# If repository exists but different name
+!find /content -name "llm-finetune" -type d 2>/dev/null
+```
+
 ---
 
 ## Memory Issues
