@@ -153,22 +153,53 @@ os.environ['HF_TOKEN'] = hf_token
 
 ## Data Preparation in Colab
 
-### Option A: Upload Local Files
+### Option A: Use Existing JSONL Files (Recommended!)
+
+**If you already have JSONL training files**, use the standard input directory:
 
 ```python
 from google.colab import files
 
-# Upload JSON/JSONL file
+# Create standard input directory
+!mkdir -p data/input
+
+# Upload your existing JSONL file(s)
+print("Upload your JSONL training file(s)...")
+uploaded = files.upload()
+
+# Move to input directory
+!mv *.jsonl data/input/
+
+print(f"✅ Uploaded {len(uploaded)} file(s) to data/input/")
+!ls -lh data/input/
+```
+
+**JSONL Format Expected**:
+```jsonl
+{"instruction": "Question here", "input": "", "output": "Answer here"}
+{"instruction": "Another question", "input": "context", "output": "Another answer"}
+```
+
+**Benefit**: Your files go directly into the standard location (`data/input/`) used by all configs!
+
+### Option B: Upload Other File Formats
+
+For PDF, DOCX, or TXT files that need processing:
+
+```python
+from google.colab import files
+
+# Upload files
 uploaded = files.upload()
 
 # Move to data directory
 !mkdir -p data
-!mv *.jsonl data/ 2>/dev/null || true
-!mv *.json data/ 2>/dev/null || true
 !mv *.pdf data/ 2>/dev/null || true
+!mv *.docx data/ 2>/dev/null || true
+!mv *.txt data/ 2>/dev/null || true
 ```
 
-### Option B: Use Sample Dataset
+### Option C: Use Sample Dataset
 
 ```python
 # Create sample data
@@ -186,16 +217,19 @@ with open('data/sample.jsonl', 'w') as f:
 print("Sample data created!")
 ```
 
-### Option C: Download from URL
+### Option D: Download from URL
 
 ```python
-# Download dataset from URL
-!wget -O data/dataset.jsonl "YOUR_DATASET_URL"
+# Create directory
+!mkdir -p data/input
+
+# Download existing JSONL
+!wget -O data/input/train.jsonl "YOUR_JSONL_URL"
 
 # Or from Hugging Face
 from datasets import load_dataset
 dataset = load_dataset("your-username/your-dataset")
-dataset['train'].to_json('data/train.jsonl')
+dataset['train'].to_json('data/input/train.jsonl')
 ```
 
 ---
@@ -220,16 +254,18 @@ model:
   use_qlora: true  # IMPORTANT: Use 4-bit for Colab
 
 data:
-  input_path: "data"
+  # Use "data/input" if you uploaded existing JSONL (Option A/D)
+  # Use "data" if you uploaded PDFs/DOCX or used sample data (Option B/C)
+  input_path: "data/input"  # Change to "data" for Option B/C
   output_path: "processed_data"
-  input_type: "json"
+  input_type: "json"  # or "pdf", "docx", "txt"
 
   langchain:
     enabled: false  # Set true if using PDFs
     qa_generation_enabled: false
 
   augmentation:
-    enabled: false
+    enabled: false  # Set true to augment your existing data
 
 training:
   # Colab-optimized settings for T4 (15GB)
