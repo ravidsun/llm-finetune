@@ -53,6 +53,11 @@ Google Colab provides **free GPU access** (T4) and paid options (A100, V100) tha
 
 **Fastest way to get started!** Copy these 5 cells into a new Colab notebook.
 
+**What you'll need:**
+- ✅ HuggingFace account and token (required - for downloading models)
+- ❌ GitHub credentials (NOT needed - we only clone the repo, not push)
+- ✅ Your training data (JSONL file or create sample)
+
 ### Cell 1: Complete Setup
 
 ```python
@@ -114,8 +119,9 @@ drive.mount('/content/drive')
 !mkdir -p /content/drive/MyDrive/llm-finetune/configs
 print("✅ Google Drive mounted!")
 
-# Step 6: Set up Hugging Face Token
+# Step 6: Set up Hugging Face Token (Required for model downloads)
 print("\n🔑 Step 6/7: Setting up Hugging Face authentication...")
+print("NOTE: GitHub credentials are NOT needed - we only clone, not push")
 from getpass import getpass
 hf_token = getpass("Enter your Hugging Face token (get from https://huggingface.co/settings/tokens): ")
 os.environ['HF_TOKEN'] = hf_token
@@ -681,12 +687,23 @@ model:
 
 **Error**: `fatal: could not read Username for 'https://github.com'`
 
-**Solution**: Skip GitHub push, save to Drive instead:
+**Cause**: This ONLY happens if you try to `git push` from Colab. You don't need to push!
+
+**Solution**: Save to Drive instead (recommended for Colab):
 ```python
-# Don't use git push in Colab
-# Instead, save to Drive
+# ❌ Don't do this in Colab:
+# !git push
+
+# ✅ Do this instead - save to Drive:
 !cp -r output /content/drive/MyDrive/llm-finetune/
+
+# Or download directly
+from google.colab import files
+!zip -r model.zip output/
+files.download('model.zip')
 ```
+
+**Note**: GitHub credentials are NOT required for fine-tuning. We only clone (read-only), never push.
 
 ### Session Disconnected
 
