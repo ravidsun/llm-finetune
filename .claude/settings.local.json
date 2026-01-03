@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: LLM Fine-Tuning Pipeline with LangChain\n\n- Add core fine-tuning pipeline with PEFT/LoRA support\n- Add LangChain integration for document processing\n- Add prompt templates and data augmentation\n- Add RunPod deployment scripts\n- Add example configurations for various use cases\n- Add comprehensive documentation and GitHub files\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(gh:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }
