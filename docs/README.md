@@ -2,6 +2,12 @@
 
 Complete step-by-step guides for fine-tuning and deploying LLMs.
 
+## Quick Links
+
+- 🚀 **[Google Colab Guide](COLAB_GUIDE.md)** - Fine-tune on free GPU in your browser!
+- 📓 **[Colab Notebook](../notebooks/llm_finetune_colab.ipynb)** - Ready-to-run notebook
+- 🖥️ **RunPod/Local Setup** - Follow phase-by-phase guides below
+
 ## Overview
 
 This documentation is organized into 5 phases, each covering a distinct stage of the fine-tuning pipeline. Follow them in order for the best experience.
