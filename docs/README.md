@@ -4,15 +4,39 @@ Complete step-by-step guides for fine-tuning and deploying LLMs.
 
 ## Quick Links
 
-- 🚀 **[Google Colab Guide](COLAB_GUIDE.md)** - Fine-tune on free GPU in your browser!
+- 🚀 **[Google Colab Phase Guide](PHASE_COLAB.md)** - Complete step-by-step Colab walkthrough
 - 📓 **[Colab Notebook](../notebooks/llm_finetune_colab.ipynb)** - Ready-to-run notebook
+- 📖 **[Colab Reference Guide](COLAB_GUIDE.md)** - Comprehensive Colab documentation
 - 🖥️ **RunPod/Local Setup** - Follow phase-by-phase guides below
 
 ## Overview
 
-This documentation is organized into 5 phases, each covering a distinct stage of the fine-tuning pipeline. Follow them in order for the best experience.
+This documentation is organized into phases covering different platforms and stages of the fine-tuning pipeline.
 
-## Phase-by-Phase Guides
+## Google Colab (Beginner-Friendly)
+
+### [Google Colab: Complete Guide](PHASE_COLAB.md)
+⏱️ Time: 45-90 minutes (including training)
+💰 Cost: FREE
+
+**All-in-one Colab guide** for fine-tuning in your browser.
+
+**You'll learn**:
+- Opening and configuring Colab notebook
+- Enabling free GPU (T4)
+- Uploading and preparing data
+- Training with progress monitoring
+- Testing and downloading your model
+- Troubleshooting common issues
+
+**Outputs**:
+- ✅ Fine-tuned 7B model
+- ✅ Model saved to Google Drive
+- ✅ Ready to deploy or use
+
+---
+
+## RunPod/Local Setup (Phase-by-Phase)
 
 ### [Phase 1: Environment Setup](PHASE1_SETUP.md)
 ⏱️ Time: 15-20 minutes
