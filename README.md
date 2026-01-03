@@ -57,6 +57,22 @@ bash scripts/setup.sh
 
 ### 2. Prepare Your Data
 
+#### Option A: Use Existing JSONL Files (Easiest!)
+
+**Already have training data?** Just use it directly!
+
+```bash
+# Place your existing JSONL file
+cp your-data.jsonl data/train.jsonl
+
+# Use the pre-configured setup
+python -m finetune_project init --output config.yaml --template existing_jsonl
+```
+
+📖 **See**: [Using Existing JSONL Files](docs/USING_EXISTING_JSONL.md) for detailed guide
+
+#### Option B: Create New Data
+
 **JSON format (recommended for instruction tuning):**
 ```jsonl
 {"instruction": "What is the capital of France?", "input": "", "output": "Paris"}

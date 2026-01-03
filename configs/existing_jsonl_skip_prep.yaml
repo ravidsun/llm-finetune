@@ -1,0 +1,61 @@
+# Configuration for pre-formatted JSONL (skip data preparation)
+# Use this when your JSONL is already in the correct format and ready to train
+
+model:
+  model_name: "Qwen/Qwen2.5-7B-Instruct"
+  lora_rank: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  target_modules:
+    - q_proj
+    - v_proj
+    - k_proj
+    - o_proj
+  use_qlora: true
+
+data:
+  # IMPORTANT: Point both input and output to the same directory
+  # This allows training to use the file directly without preparation
+  input_path: "processed_data"
+  output_path: "processed_data"
+
+  input_type: "json"
+
+  # All processing disabled
+  langchain:
+    enabled: false
+    qa_generation_enabled: false
+
+  augmentation:
+    enabled: false
+
+training:
+  num_epochs: 3
+  per_device_train_batch_size: 2
+  gradient_accumulation_steps: 8
+  learning_rate: 2.0e-4
+  warmup_ratio: 0.03
+  lr_scheduler_type: "cosine"
+  max_seq_length: 2048
+  gradient_checkpointing: true
+  fp16: false
+  bf16: true
+  output_dir: "output"
+  save_strategy: "epoch"
+  save_total_limit: 3
+  logging_steps: 10
+  report_to: []
+
+# USAGE:
+# 1. Place your pre-formatted JSONL directly in processed_data/:
+#    mkdir -p processed_data
+#    cp your-ready-file.jsonl processed_data/train.jsonl
+#
+# 2. SKIP prepare-data step entirely
+#
+# 3. Train directly:
+#    python -m finetune_project train --config configs/existing_jsonl_skip_prep.yaml
+#
+# JSONL FORMAT REQUIRED:
+# {"instruction": "Question here", "input": "", "output": "Answer here"}
+# {"instruction": "Another question", "input": "context", "output": "Another answer"}

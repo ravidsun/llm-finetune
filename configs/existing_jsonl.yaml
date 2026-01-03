@@ -1,0 +1,84 @@
+# Configuration for using existing JSONL files directly
+# Use this when you already have pre-formatted training data
+
+model:
+  model_name: "Qwen/Qwen2.5-7B-Instruct"
+  lora_rank: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  target_modules:
+    - q_proj
+    - v_proj
+    - k_proj
+    - o_proj
+  use_qlora: true  # 4-bit quantization for memory efficiency
+
+data:
+  # INPUT: Place your existing JSONL file(s) in this directory
+  input_path: "data"
+
+  # OUTPUT: Processed data will be saved here
+  output_path: "processed_data"
+
+  # TYPE: Use "json" for JSONL files
+  input_type: "json"
+
+  # LANGCHAIN: Disabled since we're using existing JSONL
+  langchain:
+    enabled: false
+    qa_generation_enabled: false
+
+  # AUGMENTATION: Set to true if you want to expand your dataset
+  augmentation:
+    enabled: false  # Change to true to augment existing data
+    instruction_variations: true
+    num_instruction_variations: 2
+    use_paraphrase_templates: true
+    whitespace_normalization: true
+
+training:
+  # Training duration
+  num_epochs: 3
+  max_steps: -1
+
+  # Batch configuration
+  per_device_train_batch_size: 2
+  gradient_accumulation_steps: 8
+  # Effective batch size = 2 * 8 = 16
+
+  # Learning rate
+  learning_rate: 2.0e-4
+  warmup_ratio: 0.03
+  lr_scheduler_type: "cosine"
+
+  # Sequence length
+  max_seq_length: 2048
+
+  # Memory optimization
+  gradient_checkpointing: true
+  fp16: false
+  bf16: true  # Use bf16 on Ampere+ GPUs (A100, RTX 30xx/40xx)
+
+  # Output
+  output_dir: "output"
+  save_strategy: "epoch"
+  save_steps: 500
+  save_total_limit: 3
+
+  # Logging
+  logging_steps: 10
+  report_to: ["tensorboard"]  # or ["wandb"] if using Weights & Biases
+
+  # Evaluation
+  evaluation_strategy: "no"
+  eval_steps: 100
+
+# USAGE:
+# 1. Place your JSONL file in data/ directory:
+#    cp your-file.jsonl data/train.jsonl
+#
+# 2. Prepare data (validates and optionally augments):
+#    python -m finetune_project prepare-data --config configs/existing_jsonl.yaml
+#
+# 3. Train:
+#    python -m finetune_project train --config configs/existing_jsonl.yaml
