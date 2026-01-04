@@ -24,21 +24,9 @@ A production-ready pipeline for fine-tuning open-source LLMs (Llama, Qwen, Mistr
 - **Paraphrase Templates**: Rule-based text variations
 - **Fully Configurable**: Enable/disable per augmentation type
 
-## Quick Start Options
+## Quick Start
 
-### Option 1: Google Colab (Easiest - Free GPU!)
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ravidsun/llm-finetune/blob/master/notebooks/llm_finetune_colab.ipynb)
-
-Fine-tune in your browser with free GPU access:
-1. Click the "Open in Colab" badge above
-2. Runtime → Change runtime type → GPU (T4)
-3. Run all cells sequentially
-4. Download your fine-tuned model!
-
-📖 **[Full Colab Guide](docs/COLAB_GUIDE.md)** | 📓 **[Colab Notebook](notebooks/llm_finetune_colab.ipynb)**
-
-### Option 2: RunPod/Local Installation
+### RunPod/Local Installation
 
 ```bash
 # Clone the repository
@@ -424,12 +412,11 @@ Each phase includes troubleshooting, best practices, and time estimates.
 Having issues? Check our comprehensive troubleshooting guide:
 
 - **[Troubleshooting Guide](docs/TROUBLESHOOTING.md)** - Solutions for common errors
-  - GitHub authentication errors (Colab)
   - CUDA out of memory
   - Training issues
   - Data format problems
   - Installation errors
-  - Platform-specific fixes
+  - RunPod-specific fixes
 
 ## License
 

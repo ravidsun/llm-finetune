@@ -1,150 +1,16 @@
 # Troubleshooting Guide
 
-Common issues and solutions for LLM fine-tuning on Colab, RunPod, and local machines.
+Common issues and solutions for LLM fine-tuning on RunPod and local machines.
 
 ---
 
 ## Table of Contents
 
-- [GitHub & Git Issues](#github--git-issues)
 - [Memory Issues](#memory-issues)
 - [Training Issues](#training-issues)
 - [Data Issues](#data-issues)
 - [Installation Issues](#installation-issues)
-- [Platform-Specific Issues](#platform-specific-issues)
-
----
-
-## GitHub & Git Issues
-
-### Error: `fatal: could not read Username for 'https://github.com'`
-
-**Platform**: Google Colab
-
-**Cause**: Colab cannot authenticate with GitHub for pushing to repositories.
-
-**Solution 1: Use Personal Access Token (Recommended)**
-
-```python
-# 1. Create Personal Access Token (PAT):
-#    - Visit: https://github.com/settings/tokens
-#    - Click "Generate new token (classic)"
-#    - Name: "Colab Access"
-#    - Select scope: ☑ repo (full control of private repositories)
-#    - Click "Generate token"
-#    - COPY THE TOKEN (you won't see it again!)
-
-# 2. Configure authentication in Colab
-import os
-from getpass import getpass
-
-# Enter credentials
-github_username = input("GitHub username: ")
-print("\nEnter Personal Access Token (PAT):")
-print("Create at: https://github.com/settings/tokens")
-github_token = getpass("PAT: ")
-
-# Update email with your actual email
-your_email = input("Your email: ")
-
-# Configure git
-!git config --global user.name "{github_username}"
-!git config --global user.email "{your_email}"
-
-# Set remote URL with token
-!git remote set-url origin https://{github_username}:{github_token}@github.com/ravidsun/llm-finetune.git
-
-# Now push works
-!git push
-
-print("✅ Successfully configured GitHub authentication!")
-```
-
-**Solution 2: Skip GitHub and Save to Drive**
-
-```python
-# Save model to Google Drive instead
-!cp -r output /content/drive/MyDrive/llm-finetune/output/
-print("✅ Model saved to Google Drive!")
-
-# Or download directly
-from google.colab import files
-!zip -r model.zip output/
-files.download('model.zip')
-```
-
-**Solution 3: Use GitHub CLI**
-
-```python
-# Install GitHub CLI
-!type -p curl >/dev/null || (apt update && apt install curl -y)
-!curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-!chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
-!echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-!apt update && apt install gh -y
-
-# Authenticate (follow prompts)
-!gh auth login
-
-# Push
-!git push
-```
-
-### Error: `Permission denied (publickey)`
-
-**Solution**: Use HTTPS instead of SSH
-
-```bash
-# Check current remote
-git remote -v
-
-# If using SSH (git@github.com), change to HTTPS
-git remote set-url origin https://github.com/ravidsun/llm-finetune.git
-```
-
-### Error: `[Errno 2] No such file or directory: 'llm-finetune'`
-
-**Platform**: Google Colab
-
-**Cause**: Repository not cloned yet, or you're not in the correct directory.
-
-**Solution 1: Clone Repository First**
-
-```python
-# Clone the repository (run this first!)
-!git clone https://github.com/ravidsun/llm-finetune.git
-
-# Change to project directory
-%cd llm-finetune
-
-# Verify you're in the right directory
-!pwd
-!ls -la
-```
-
-**Solution 2: Navigate to Existing Directory**
-
-```python
-# If already cloned, just change directory
-%cd /content/llm-finetune
-
-# Or from subdirectory
-%cd ..
-%cd llm-finetune
-```
-
-**Solution 3: Check Current Location**
-
-```python
-# See where you are
-!pwd
-
-# See what's in current directory
-!ls -la
-
-# If repository exists but different name
-!find /content -name "llm-finetune" -type d 2>/dev/null
-```
+- [RunPod-Specific Issues](#runpod-specific-issues)
 
 ---
 
@@ -193,7 +59,7 @@ model:
   load_in_4bit: true
 ```
 
-**Full Colab-Optimized Config for T4 (15GB)**
+**Full Cloud-Optimized Config for T4 (15GB)**
 
 ```yaml
 model:
@@ -296,7 +162,7 @@ watch -n 1 nvidia-smi
                print(json.loads(line))
    ```
 
-### Session Disconnected (Colab)
+### Session Disconnected (cloud platform)
 
 **Solution**: Resume from checkpoint
 
@@ -321,7 +187,7 @@ def keep_alive():
         display(Javascript('document.title="Active"'))
         time.sleep(60)
 
-# Or use Colab Pro for longer sessions
+# Or use higher-tier GPU for longer sessions
 ```
 
 ---
@@ -438,12 +304,12 @@ snapshot_download("Qwen/Qwen2.5-7B-Instruct", local_dir="./models/qwen")
 
 ## Platform-Specific Issues
 
-### Google Colab
+### cloud environments
 
-**Issue**: Colab disconnects frequently
+**Issue**: cloud platform disconnects frequently
 
 **Solutions**:
-- Use Colab Pro for longer sessions (up to 24 hours)
+- Use higher-tier GPU for longer sessions (up to 24 hours)
 - Save checkpoints frequently:
   ```yaml
   training:
@@ -538,7 +404,7 @@ If you're still stuck:
 
 Include:
 - Error message (full traceback)
-- Platform (Colab/RunPod/Local)
+- Platform (cloud platform/RunPod/Local)
 - GPU type and VRAM
 - Config file
 - Python/CUDA versions

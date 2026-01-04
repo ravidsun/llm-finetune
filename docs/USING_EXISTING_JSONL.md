@@ -17,7 +17,7 @@ We recommend using `/workspace/data/input` as the standard location for your exi
 └── output/                 ← Training output (model weights)
 ```
 
-**Google Colab:**
+**RunPod:**
 ```
 /content/
 ├── data/
@@ -45,23 +45,12 @@ mkdir -p /workspace/processed_data
 cp /path/to/your/file.jsonl /workspace/processed_data/train.jsonl
 ```
 
-**Google Colab:**
+**RunPod:**
 ```bash
 # Create processed_data directory
 !mkdir -p processed_data
 
 # Upload your file
-from google.colab import files
-uploaded = files.upload()
-
-# Move to processed_data
-!mv *.jsonl processed_data/train.jsonl
-```
-
-#### Step 2: Create Minimal Config
-
-```yaml
-model:
   model_name: "Qwen/Qwen2.5-7B-Instruct"
   lora_rank: 16
   lora_alpha: 32
@@ -70,9 +59,9 @@ model:
 data:
   # Point to where your JSONL already is
   # RunPod/Local: use /workspace/processed_data
-  # Colab: use processed_data (relative path)
-  input_path: "/workspace/processed_data"  # or "processed_data" for Colab
-  output_path: "/workspace/processed_data"  # or "processed_data" for Colab
+  # RunPod: use processed_data (relative path)
+  input_path: "/workspace/processed_data"  # or "processed_data" for RunPod
+  output_path: "/workspace/processed_data"  # or "processed_data" for RunPod
   input_type: "json"
 
   # Disable LangChain processing since data is ready
@@ -116,23 +105,12 @@ cp /path/to/your/train.jsonl /workspace/data/input/
 cp /path/to/your/test.jsonl /workspace/data/input/  # Optional
 ```
 
-**Google Colab:**
+**RunPod:**
 ```bash
 # Create input directory
 !mkdir -p data/input
 
 # Upload your files
-from google.colab import files
-uploaded = files.upload()
-
-# Move to input directory
-!mv *.jsonl data/input/
-```
-
-### Step 2: Configure for Direct Use
-
-```yaml
-model:
   model_name: "Qwen/Qwen2.5-7B-Instruct"
   lora_rank: 16
   lora_alpha: 32
@@ -141,9 +119,9 @@ model:
 data:
   # Standard input directory for existing JSONL files
   # RunPod/Local: /workspace/data/input
-  # Colab: data/input (relative path)
-  input_path: "/workspace/data/input"   # or "data/input" for Colab
-  output_path: "/workspace/processed_data"   # or "processed_data" for Colab
+  # RunPod: data/input (relative path)
+  input_path: "/workspace/data/input"   # or "data/input" for RunPod
+  output_path: "/workspace/processed_data"   # or "processed_data" for RunPod
   input_type: "json"                    # Important: use "json" for JSONL
 
   langchain:
@@ -462,22 +440,11 @@ python -m finetune_project train --config config-multiple.yaml
 
 ---
 
-## Google Colab Example
+## RunPod Example
 
-### Upload Existing JSONL to Colab
+### Upload Existing JSONL to RunPod
 
 ```python
-from google.colab import files
-
-# Create directory
-!mkdir -p data
-
-# Upload your JSONL file
-print("Upload your .jsonl file:")
-uploaded = files.upload()
-
-# Move to data directory
-for filename in uploaded.keys():
     !mv "{filename}" data/train.jsonl
 
 print(f"✅ File uploaded: {list(uploaded.keys())[0]}")

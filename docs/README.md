@@ -4,40 +4,13 @@ Complete step-by-step guides for fine-tuning and deploying LLMs.
 
 ## Quick Links
 
-- 🚀 **[Google Colab Guide](COLAB_GUIDE.md)** - Complete Colab guide with copy-paste cells
-- 📓 **[Colab Notebook](../notebooks/llm_finetune_colab.ipynb)** - Ready-to-run notebook (alternative)
 - 🔧 **[Troubleshooting Guide](TROUBLESHOOTING.md)** - Solutions for common errors
 - 📂 **[Using Existing JSONL Files](USING_EXISTING_JSONL.md)** - Skip data prep with existing data
 - 🖥️ **RunPod/Local Setup** - Follow phase-by-phase guides below
 
 ## Overview
 
-This documentation is organized into phases covering different platforms and stages of the fine-tuning pipeline.
-
-## Google Colab (Beginner-Friendly)
-
-### [Google Colab: Complete Guide](COLAB_GUIDE.md)
-⏱️ Time: 45-90 minutes (including training)
-💰 Cost: FREE
-
-**Comprehensive Colab guide** with 5 copy-paste cells to get started instantly!
-
-**You'll learn**:
-- Copy-paste setup cells (fastest method)
-- Step-by-step manual setup
-- Uploading and preparing data
-- Training with progress monitoring
-- Testing and downloading your model
-- Troubleshooting common issues
-
-**Outputs**:
-- ✅ Fine-tuned 7B model
-- ✅ Model saved to Google Drive
-- ✅ Ready to deploy or use
-
-**Alternative**: [PHASE_COLAB.md](PHASE_COLAB.md) - Phase-by-phase walkthrough
-
----
+This documentation is organized into phases covering different stages of the fine-tuning pipeline on RunPod or local machines.
 
 ## RunPod/Local Setup (Phase-by-Phase)
 
@@ -176,11 +149,10 @@ Deploy your model for production use.
 
 ### Troubleshooting & Help
 - **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Comprehensive error solutions
-  - GitHub authentication (Colab)
   - CUDA out of memory errors
   - Training and data issues
   - Installation problems
-  - Platform-specific fixes
+  - RunPod-specific fixes
 
 ### Architecture & Diagrams
 - [ARCHITECTURE.md](../ARCHITECTURE.md) - ASCII diagrams and technical architecture
@@ -197,7 +169,6 @@ Deploy your model for production use.
 
 ### Example Configs
 - `configs/existing_jsonl.yaml` - Use existing JSONL files
-- `configs/existing_jsonl_colab.yaml` - Colab with existing JSONL
 - `configs/existing_jsonl_skip_prep.yaml` - Skip all data prep
 - `configs/json_sft.yaml` - JSON supervised fine-tuning
 - `configs/pdf_causal_lm.yaml` - PDF continued pretraining
