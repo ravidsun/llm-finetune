@@ -197,8 +197,8 @@ def find_adapter_path() -> Path:
     """Find adapter path by checking common locations."""
     # Check common locations
     search_paths = [
+        Path("c:/LLM/llm-finetune/output"),  # Primary location (from RunPod download)
         Path("./output"),  # Current directory
-        Path("c:/LLM/llm-finetune/output"),  # Default training location
         Path.cwd() / "output",  # Current working directory
     ]
 
@@ -207,6 +207,13 @@ def find_adapter_path() -> Path:
             return path.absolute()
 
     return None
+
+
+def get_cache_dir(output_path: Path) -> str:
+    """Get cache directory for base model downloads."""
+    cache_dir = output_path / "base_model_cache"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    return str(cache_dir)
 
 
 def merge_model(args):
@@ -273,9 +280,14 @@ def merge_model(args):
     print(f"\n[5/7] Loading base model: {base_model}")
     print("   This may take several minutes...")
 
+    # Set cache directory to store base model in merged_model folder
+    cache_dir = get_cache_dir(output_path)
+    print(f"   Cache: {cache_dir}")
+
     try:
         base_model_obj = AutoModelForCausalLM.from_pretrained(
             base_model,
+            cache_dir=cache_dir,
             torch_dtype=torch.float16 if device == "cuda" else torch.float32,
             device_map=device if device != "cpu" else None,
             trust_remote_code=True,
@@ -336,6 +348,7 @@ def merge_model(args):
         print("   Saving tokenizer...")
         tokenizer = AutoTokenizer.from_pretrained(
             base_model,
+            cache_dir=cache_dir,
             trust_remote_code=True,
         )
         tokenizer.save_pretrained(str(output_path))

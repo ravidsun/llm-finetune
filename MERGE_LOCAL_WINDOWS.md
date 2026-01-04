@@ -31,12 +31,14 @@ python scripts\merge_local.py
 ## What Happens
 
 The script will:
-1. ✅ Auto-find adapter in `c:\LLM\llm-finetune\output\` (or current directory)
+1. ✅ Auto-find adapter in `c:\LLM\llm-finetune\output\` (from your RunPod download)
 2. ✅ Auto-detect which base model you used (7B or 14B)
 3. ✅ Check disk space
-4. ✅ Download base model from HuggingFace (if not cached)
+4. ✅ Download base model from HuggingFace to `c:\LLM\merged_model\base_model_cache\`
 5. ✅ Merge adapter with base model
-6. ✅ Save merged model to `c:\LLM\merged_model\` (outside the project folder)
+6. ✅ Save final merged model to `c:\LLM\merged_model\`
+
+Everything happens in the `c:\LLM\merged_model\` directory - completely separate from your project files!
 
 ## Advanced Usage
 
@@ -112,11 +114,26 @@ print(tokenizer.decode(outputs[0], skip_special_tokens=True))
 
 ## Default Paths
 
+### Inputs (Read Only)
 - **Adapter:** Auto-detected from:
-  - `c:\LLM\llm-finetune\output\` (primary)
-  - `.\output\` (current directory)
+  - `c:\LLM\llm-finetune\output\` (primary - where you download from RunPod)
+  - `.\output\` (current directory fallback)
 
-- **Output:** `c:\LLM\merged_model\` (created automatically)
+### Outputs (All in one place)
+- **Merged Model:** `c:\LLM\merged_model\` (main output)
+- **Base Model Cache:** `c:\LLM\merged_model\base_model_cache\` (downloaded from HuggingFace)
+
+**Result Structure:**
+```
+c:\LLM\
+├── llm-finetune\          # Your project (source code only)
+│   └── output\            # Downloaded adapter from RunPod
+└── merged_model\          # Everything merge-related
+    ├── config.json        # Final merged model files
+    ├── model-*.safetensors
+    ├── tokenizer files...
+    └── base_model_cache\  # Base model downloaded here
+```
 
 ## Troubleshooting
 
@@ -146,9 +163,29 @@ print(tokenizer.decode(outputs[0], skip_special_tokens=True))
 
 After merging:
 1. Test the model works correctly
-2. Use it for inference
+2. Use it for inference from `c:\LLM\merged_model\`
 3. Optionally upload to HuggingFace Hub
-4. Clean up the `output/` folder if you want to save space
+4. Clean up if needed:
+   - Delete `c:\LLM\merged_model\base_model_cache\` (saves ~15-30 GB)
+   - Keep `c:\LLM\llm-finetune\output\` (your adapter - only ~500 MB)
+
+## Cleaning Up
+
+After successful merge, you can free up space:
+
+```cmd
+# Delete base model cache (safe - keeps your merged model)
+rmdir /s /q c:\LLM\merged_model\base_model_cache
+
+# This leaves only your final merged model in c:\LLM\merged_model\
+```
+
+**What to keep:**
+- ✅ `c:\LLM\merged_model\` (final merged model - **keep this**)
+- ✅ `c:\LLM\llm-finetune\output\` (your adapter - small, good backup)
+
+**What to delete (optional):**
+- ❌ `c:\LLM\merged_model\base_model_cache\` (can be deleted after merge)
 
 ## Complete Documentation
 
