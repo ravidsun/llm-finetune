@@ -26,15 +26,17 @@ pip install --upgrade --force-reinstall pandas
 
 ## Step 2: Download Your Trained Model from RunPod
 
-### Option A: Using RunPod Web Interface
+> 📥 **Detailed download instructions:** See [DOWNLOAD_FROM_RUNPOD.md](DOWNLOAD_FROM_RUNPOD.md) for multiple download methods
 
-1. Log into your RunPod account
-2. Connect to your pod
-3. Click on "File Browser" or "Connect via HTTP"
-4. Navigate to `/workspace/llm-finetune/output/`
-5. Download the entire `output` folder to your computer
+### Quick Download (Web Interface)
 
-### Option B: Using SCP (Command Line)
+1. Log into [RunPod](https://www.runpod.io/)
+2. Connect to your pod → "Connect to HTTP Service"
+3. Navigate to `/workspace/llm-finetune/output/`
+4. Download the `output` folder as ZIP
+5. Extract to `c:\LLM\llm-finetune\output\` on your local machine
+
+### Alternative: SCP (Command Line)
 
 ```cmd
 # Replace POD_IP with your RunPod IP address
@@ -42,11 +44,13 @@ scp -r root@POD_IP:/workspace/llm-finetune/output c:\LLM\llm-finetune\
 ```
 
 **What you should have downloaded:**
-- `adapter_config.json`
-- `adapter_model.safetensors` (or `adapter_model.bin`)
+- `adapter_config.json` ✅
+- `adapter_model.safetensors` (or `adapter_model.bin`) ✅
 - `tokenizer.json`
 - `tokenizer_config.json`
 - Other tokenizer files
+
+**Download size:** ~300-600 MB total
 
 ## Step 3: Organize Your Files
 
