@@ -296,12 +296,12 @@ class FineTuneTrainer:
             packing=self.config.training.packing and self.data_format == "text",
             dataset_text_field="text" if self.data_format == "text" else None,
         )
-        
+
         trainer_kwargs = {
             "model": self.model,
             "args": sft_config,
             "train_dataset": dataset["train"],
-            "tokenizer": self.tokenizer,
+            "processing_class": self.tokenizer,  # Changed from 'tokenizer' to 'processing_class' for trl v0.26+
         }
         
         if "eval" in dataset:
