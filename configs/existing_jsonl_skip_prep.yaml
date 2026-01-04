@@ -1,10 +1,13 @@
 # Configuration for pre-formatted JSONL (skip data preparation)
 # Use this when your JSONL is already in the correct format and ready to train
+#
+# Recommended GPU: A40 (46GB VRAM) or A100 40GB
+# RunPod Cost: ~$0.39/hr (A40)
 
 model:
-  model_name: "Qwen/Qwen2.5-7B-Instruct"
-  lora_rank: 16
-  lora_alpha: 32
+  model_name: "Qwen/Qwen2.5-14B-Instruct"
+  lora_rank: 32
+  lora_alpha: 64
   lora_dropout: 0.05
   target_modules:
     - q_proj
@@ -32,12 +35,12 @@ data:
 
 training:
   num_epochs: 3
-  per_device_train_batch_size: 2
-  gradient_accumulation_steps: 8
-  learning_rate: 2.0e-4
+  per_device_train_batch_size: 4
+  gradient_accumulation_steps: 4
+  learning_rate: 1.5e-4
   warmup_ratio: 0.03
   lr_scheduler_type: "cosine"
-  max_seq_length: 2048
+  max_seq_length: 4096
   gradient_checkpointing: true
   fp16: false
   bf16: true
