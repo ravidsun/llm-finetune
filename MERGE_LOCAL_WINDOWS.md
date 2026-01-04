@@ -16,9 +16,9 @@ Quick guide for merging your LoRA adapter with the base model on your local Wind
 
 ### Option 1: Double-Click Method (Easiest)
 
-1. Download your trained `output/` folder from RunPod to your local machine
-2. Place it in the `llm-finetune/` directory
-3. Double-click `merge.bat` in Windows Explorer
+1. Download your trained `output/` folder from RunPod
+2. Place it at `c:\LLM\llm-finetune\output\`
+3. Double-click `merge.bat` in Windows Explorer (in `c:\LLM\llm-finetune\`)
 4. Follow the prompts
 
 ### Option 2: Command Line
@@ -31,19 +31,27 @@ python scripts\merge_local.py
 ## What Happens
 
 The script will:
-1. ✅ Check for adapter files in `./output/`
+1. ✅ Auto-find adapter in `c:\LLM\llm-finetune\output\` (or current directory)
 2. ✅ Auto-detect which base model you used (7B or 14B)
 3. ✅ Check disk space
 4. ✅ Download base model from HuggingFace (if not cached)
 5. ✅ Merge adapter with base model
-6. ✅ Save merged model to `./merged_model/`
+6. ✅ Save merged model to `c:\LLM\merged_model\` (outside the project folder)
 
 ## Advanced Usage
 
-### Specify Custom Paths
+### Specify Custom Output Location
 
 ```cmd
-python scripts\merge_local.py --adapter_path .\my_output --output_path .\my_merged
+# Save to a different location
+python scripts\merge_local.py --output_path c:\MyModels\my_merged_model
+```
+
+### Specify Custom Adapter Path
+
+```cmd
+# If adapter is in a different location
+python scripts\merge_local.py --adapter_path c:\Downloads\model_output
 ```
 
 ### Force Specific Base Model
@@ -58,16 +66,26 @@ python scripts\merge_local.py --base_model Qwen/Qwen2.5-7B-Instruct
 python scripts\merge_local.py --device cpu
 ```
 
+### All Options Combined
+
+```cmd
+python scripts\merge_local.py ^
+  --adapter_path c:\LLM\llm-finetune\output ^
+  --output_path c:\LLM\merged_model ^
+  --base_model Qwen/Qwen2.5-7B-Instruct ^
+  --device cuda
+```
+
 ## Testing Your Merged Model
 
 ```cmd
-python scripts\test_merged_model.py .\merged_model
+python scripts\test_merged_model.py c:\LLM\merged_model
 ```
 
 Or with a custom prompt:
 
 ```cmd
-python scripts\test_merged_model.py .\merged_model --prompt "Your test question"
+python scripts\test_merged_model.py c:\LLM\merged_model --prompt "Your test question"
 ```
 
 ## Using the Merged Model
@@ -77,11 +95,11 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # Load merged model
 model = AutoModelForCausalLM.from_pretrained(
-    "./merged_model",
+    "c:/LLM/merged_model",
     torch_dtype="auto",
     device_map="auto"
 )
-tokenizer = AutoTokenizer.from_pretrained("./merged_model")
+tokenizer = AutoTokenizer.from_pretrained("c:/LLM/merged_model")
 
 # Use it
 messages = [{"role": "user", "content": "Hello!"}]
@@ -92,11 +110,20 @@ outputs = model.generate(**inputs, max_new_tokens=100)
 print(tokenizer.decode(outputs[0], skip_special_tokens=True))
 ```
 
+## Default Paths
+
+- **Adapter:** Auto-detected from:
+  - `c:\LLM\llm-finetune\output\` (primary)
+  - `.\output\` (current directory)
+
+- **Output:** `c:\LLM\merged_model\` (created automatically)
+
 ## Troubleshooting
 
 ### "No adapter files found"
 - Make sure you have the `output/` folder from training
-- Check that `output/adapter_model.safetensors` exists
+- Check that it's at `c:\LLM\llm-finetune\output\`
+- Verify `adapter_model.safetensors` exists inside
 
 ### "Out of disk space"
 - You need 30-60 GB free depending on model size

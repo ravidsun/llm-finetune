@@ -43,8 +43,8 @@ def parse_args():
     parser.add_argument(
         "--adapter_path",
         type=str,
-        default="./output",
-        help="Path to the trained adapter (default: ./output)",
+        default=None,
+        help="Path to the trained adapter (default: auto-detect in current dir or c:\\LLM\\llm-finetune\\output)",
     )
 
     parser.add_argument(
@@ -57,8 +57,8 @@ def parse_args():
     parser.add_argument(
         "--output_path",
         type=str,
-        default="./merged_model",
-        help="Path to save the merged model (default: ./merged_model)",
+        default=None,
+        help="Path to save the merged model (default: c:\\LLM\\merged_model)",
     )
 
     parser.add_argument(
@@ -193,6 +193,22 @@ def get_device(device_arg: str) -> str:
     return device_arg
 
 
+def find_adapter_path() -> Path:
+    """Find adapter path by checking common locations."""
+    # Check common locations
+    search_paths = [
+        Path("./output"),  # Current directory
+        Path("c:/LLM/llm-finetune/output"),  # Default training location
+        Path.cwd() / "output",  # Current working directory
+    ]
+
+    for path in search_paths:
+        if path.exists() and (path / "adapter_config.json").exists():
+            return path.absolute()
+
+    return None
+
+
 def merge_model(args):
     """Main merging function."""
 
@@ -200,9 +216,28 @@ def merge_model(args):
     print("🔄 Merge LoRA Adapter with Base Model (Local)")
     print("=" * 70)
 
-    # Convert paths
-    adapter_path = Path(args.adapter_path).absolute()
-    output_path = Path(args.output_path).absolute()
+    # Auto-detect adapter path if not specified
+    if args.adapter_path:
+        adapter_path = Path(args.adapter_path).absolute()
+    else:
+        print("\n[Auto-detect] Looking for adapter...")
+        adapter_path = find_adapter_path()
+        if not adapter_path:
+            print("❌ Error: Could not find adapter automatically")
+            print("\nSearched in:")
+            print("  - ./output")
+            print("  - c:/LLM/llm-finetune/output")
+            print("\nPlease specify adapter path:")
+            print("  python scripts/merge_local.py --adapter_path <path>")
+            return False
+        print(f"✅ Found adapter at: {adapter_path}")
+
+    # Set default output path to c:\LLM\merged_model if not specified
+    if args.output_path:
+        output_path = Path(args.output_path).absolute()
+    else:
+        output_path = Path("c:/LLM/merged_model").absolute()
+        print(f"📁 Using default output path: {output_path}")
 
     # Step 1: Verify adapter
     if not verify_adapter_exists(adapter_path):
