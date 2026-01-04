@@ -28,11 +28,11 @@ A production-ready pipeline for fine-tuning open-source LLMs (Llama, Qwen, Mistr
 
 ### 🚀 RunPod (Automated - Recommended)
 
-**Complete automated setup in one command:**
+**Complete automated setup + training in one command:**
 
 ```bash
-# On RunPod, run this single command:
-curl -fsSL https://raw.githubusercontent.com/ravidsun/llm-finetune/master/scripts/runpod_auto_setup.sh | bash
+# On RunPod, run this single command for everything:
+curl -fsSL https://raw.githubusercontent.com/ravidsun/llm-finetune/master/scripts/runpod.sh | bash
 ```
 
 This will automatically:
@@ -40,10 +40,12 @@ This will automatically:
 - ✅ Clone repository
 - ✅ Set up directories
 - ✅ Verify GPU access
+- ✅ Start training (after you upload data)
 
-**Then start training with:**
+**Or just setup first:**
 ```bash
-bash scripts/runpod_quick_train.sh
+curl -fsSL https://raw.githubusercontent.com/ravidsun/llm-finetune/master/scripts/runpod.sh | bash -s setup
+# Then later: bash scripts/runpod.sh train
 ```
 
 📖 **[Full RunPod Guide](RUNPOD_GUIDE.md)** - Step-by-step with automation

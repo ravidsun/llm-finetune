@@ -72,7 +72,7 @@ Once deployed:
 Copy and paste this **single command** to set up everything:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ravidsun/llm-finetune/master/scripts/runpod_auto_setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ravidsun/llm-finetune/master/scripts/runpod.sh | bash -s setup
 ```
 
 This script will automatically:
@@ -83,6 +83,11 @@ This script will automatically:
 - ✅ Install the project
 
 **Time**: ~5-8 minutes
+
+**Or setup + train in one command:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/ravidsun/llm-finetune/master/scripts/runpod.sh | bash
+```
 
 ### 2.2 Manual Setup (Alternative)
 
@@ -191,7 +196,7 @@ Use the automated training script:
 cd /workspace/llm-finetune
 
 # One-command training with sensible defaults
-bash scripts/runpod_quick_train.sh
+bash scripts/runpod.sh train
 ```
 
 This will:
