@@ -2,15 +2,18 @@
 
 A production-ready pipeline for fine-tuning open-source LLMs (Llama, Qwen, Mistral) on RunPod with **LangChain integration** for document processing, prompt templating, and optional LLM-based QA generation.
 
-> **📊 Visual Guides**: Check out [ARCHITECTURE.md](ARCHITECTURE.md) for ASCII diagrams and [DIAGRAMS.md](DIAGRAMS.md) for interactive Mermaid flowcharts to understand the project structure.
+> **⚡ Quick Start**: Use our [automated RunPod script](#-runpod-automated---recommended) for one-command setup!
+> **📊 Visual Guides**: Check out [ARCHITECTURE.md](ARCHITECTURE.md) for ASCII diagrams and [DIAGRAMS.md](DIAGRAMS.md) for interactive Mermaid flowcharts.
 
 ## Features
 
 ### Core Features
+- **Automated Setup**: One-command installation and training on RunPod
 - **Multiple Models**: Support for Llama, Qwen, Mistral, and other Hugging Face models
 - **PEFT/LoRA**: Parameter-efficient fine-tuning with configurable LoRA adapters
 - **QLoRA**: 4-bit quantization for training larger models on limited VRAM
-- **RunPod Optimized**: Ready-to-use scripts for cloud GPU training
+- **GPU Auto-Detection**: Automatically optimizes settings based on available VRAM
+- **Multiple JSONL Support**: Easily use existing training data files
 
 ### LangChain Integration
 - **Document Loading**: PDF, DOCX, TXT via LangChain loaders
@@ -64,21 +67,23 @@ pip install -e .
 pip install -e ".[llm]"
 ```
 
-### 2. Prepare Your Data
+### 2. Prepare Your Data (Local/Manual Setup)
 
 #### Option A: Use Existing JSONL Files (Easiest!)
 
 **Already have training data?** Just use it directly!
 
 ```bash
-# Place your existing JSONL file
-cp your-data.jsonl data/train.jsonl
+# Place your existing JSONL file(s) - supports multiple files
+cp your-data.jsonl data/input/train.jsonl
+# Or multiple files:
+cp *.jsonl data/input/
 
 # Use the pre-configured setup
 python -m finetune_project init --output config.yaml --template existing_jsonl
 ```
 
-📖 **See**: [Phase 2: Data Preparation](docs/PHASE2_DATA_PREPARATION.md#using-existing-jsonl-files) for detailed guide on using existing JSONL files
+📖 **See**: [Phase 2: Data Preparation](docs/PHASE2_DATA_PREPARATION.md#using-existing-jsonl-files) for detailed guide
 
 #### Option B: Create New Data
 
@@ -89,26 +94,19 @@ python -m finetune_project init --output config.yaml --template existing_jsonl
 ```
 
 **PDF documents (for continued pretraining or QA generation):**
-- Place PDFs in `/workspace/data/`
+- Place PDFs in `data/input/`
 - The pipeline extracts text and chunks using LangChain
 
-### 3. Configure Training
+### 3. Configure and Train (Local/Manual Setup)
 
 ```bash
-# Generate a config file
-python -m finetune_project init --output config.yaml
+# Generate config
+python -m finetune_project init --output config.yaml --template existing_jsonl
 
-# Or use a template
-python -m finetune_project init --output config.yaml --template qa_generation
-```
-
-### 4. Run Training
-
-```bash
-# Prepare data (with LangChain processing)
+# Prepare data
 python -m finetune_project prepare-data --config config.yaml
 
-# Optional: Enable QA generation from PDFs
+# Optional: Enable QA generation from PDFs (requires ANTHROPIC_API_KEY)
 python -m finetune_project prepare-data --config config.yaml --enable-qa
 
 # Train
@@ -271,19 +269,35 @@ export ANTHROPIC_API_KEY=your_anthropic_key
 export WANDB_API_KEY=your_wandb_key
 ```
 
-### 4. Run Training
+### 4. Automated Training
+
+**Using the unified script:**
 
 ```bash
-# Clone and setup
-cd /workspace
-git clone https://github.com/ravidsun/llm-finetune.git
-cd llm-finetune
-bash scripts/setup.sh
+cd /workspace/llm-finetune
 
-# Start training in tmux
-tmux new -s training
-CONFIG_FILE=/workspace/config.yaml bash scripts/runpod_start.sh
-# Detach: Ctrl+B, D
+# Upload your JSONL files to data/input/ first, then:
+bash scripts/runpod.sh train
+
+# The script will:
+# ✅ Auto-detect your GPU and optimize settings
+# ✅ Generate optimized config automatically
+# ✅ Process your data
+# ✅ Start training in tmux session
+# ✅ Show monitoring commands
+```
+
+**Monitor training:**
+
+```bash
+# Attach to training session
+tmux attach -t training
+
+# View logs
+tail -f output/training.log
+
+# Check GPU usage
+watch -n 1 nvidia-smi
 ```
 
 ## Configuration Reference
@@ -387,19 +401,30 @@ LangChain provides:
 - Prompt template management
 - Easy LLM integration for QA generation
 
-## Troubleshooting
+## Documentation & Support
 
-### QA Generation Not Working
-```bash
-# Check API key is set
-echo $ANTHROPIC_API_KEY
+### Quick Start Guides
 
-# Install LLM dependencies
-pip install langchain-anthropic anthropic
-```
+- 🚀 **[RunPod Automated Guide](RUNPOD_GUIDE.md)** - Comprehensive automated setup (recommended)
+- 🔧 **[Troubleshooting Guide](docs/TROUBLESHOOTING.md)** - Solutions for common errors
 
-### Out of Memory
+### Phase-by-Phase Guides
+
+For detailed, step-by-step instructions organized by phase:
+
+📖 **[Complete Documentation](docs/README.md)** - Start here for guided walkthrough
+
+1. **[Phase 1: Environment Setup](docs/PHASE1_SETUP.md)** - Install dependencies and configure environment
+2. **[Phase 2: Data Preparation](docs/PHASE2_DATA_PREPARATION.md)** - Process data with LangChain (includes using existing JSONL)
+3. **[Phase 3: Training](docs/PHASE3_TRAINING.md)** - Fine-tune your model with PEFT/LoRA
+4. **[Phase 4: Evaluation & Export](docs/PHASE4_EVALUATION.md)** - Test and export model
+5. **[Phase 5: Deployment](docs/PHASE5_DEPLOYMENT.md)** - Deploy to production
+
+### Common Issues
+
+**Out of Memory Errors:**
 ```yaml
+# Reduce these values in config.yaml:
 training:
   per_device_train_batch_size: 1
   gradient_accumulation_steps: 16
@@ -407,37 +432,14 @@ training:
   gradient_checkpointing: true
 ```
 
-### LangChain Import Errors
+**QA Generation Issues:**
 ```bash
-# Install latest LangChain
-pip install --upgrade langchain langchain-core langchain-community
+# Check API key and install dependencies
+echo $ANTHROPIC_API_KEY
+pip install langchain-anthropic anthropic
 ```
 
-## Phase-by-Phase Guides
-
-For detailed, step-by-step instructions organized by phase:
-
-📖 **[Complete Documentation](docs/README.md)** - Start here for guided walkthrough
-
-### Individual Phases:
-1. **[Phase 1: Environment Setup](docs/PHASE1_SETUP.md)** - Install dependencies and configure RunPod
-2. **[Phase 2: Data Preparation](docs/PHASE2_DATA_PREPARATION.md)** - Process data with LangChain
-3. **[Phase 3: Training](docs/PHASE3_TRAINING.md)** - Fine-tune your model
-4. **[Phase 4: Evaluation & Export](docs/PHASE4_EVALUATION.md)** - Test and export model
-5. **[Phase 5: Deployment](docs/PHASE5_DEPLOYMENT.md)** - Deploy to production
-
-Each phase includes troubleshooting, best practices, and time estimates.
-
-## Troubleshooting
-
-Having issues? Check our comprehensive troubleshooting guide:
-
-- **[Troubleshooting Guide](docs/TROUBLESHOOTING.md)** - Solutions for common errors
-  - CUDA out of memory
-  - Training issues
-  - Data format problems
-  - Installation errors
-  - RunPod-specific fixes
+For more help, see the **[Complete Troubleshooting Guide](docs/TROUBLESHOOTING.md)**
 
 ## License
 
