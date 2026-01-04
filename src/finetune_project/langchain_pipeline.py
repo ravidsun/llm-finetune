@@ -749,9 +749,9 @@ Return ONLY a valid JSON array."""
         """Save processed dataset to disk."""
         output_path = Path(self.data_config.output_dataset_path)
         output_path.mkdir(parents=True, exist_ok=True)
-        
-        # Save as HF dataset
-        dataset_dict.save_to_disk(output_path)
+
+        # Save as HF dataset (convert Path to string for fsspec compatibility)
+        dataset_dict.save_to_disk(str(output_path))
         logger.info(f"Saved dataset to: {output_path}")
         
         # Also save as JSONL for inspection
@@ -765,12 +765,13 @@ Return ONLY a valid JSON array."""
     def load_prepared_dataset(self) -> DatasetDict:
         """Load previously prepared dataset."""
         output_path = Path(self.data_config.output_dataset_path)
-        
+
         if not output_path.exists():
             raise FileNotFoundError(
                 f"Prepared dataset not found at {output_path}. "
                 "Run 'prepare-data' first."
             )
-        
+
         from datasets import load_from_disk
-        return load_from_disk(output_path)
+        # Convert Path to string for fsspec compatibility
+        return load_from_disk(str(output_path))
