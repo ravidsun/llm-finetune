@@ -45,10 +45,12 @@ class TrainingConfig:
     bf16: bool = True
     gradient_checkpointing: bool = True
     logging_steps: int = 10
+    logging_strategy: str = "steps"  # steps, epoch, or no
     save_steps: int = 100
+    save_strategy: str = "steps"  # steps, epoch, or no
     eval_steps: int = 100
-    save_total_limit: int = 3
     eval_strategy: str = "steps"  # Renamed from evaluation_strategy in transformers v4.30+
+    save_total_limit: int = 3
     optim: str = "paged_adamw_8bit"
     max_seq_length: int = 2048
     max_grad_norm: float = 0.3

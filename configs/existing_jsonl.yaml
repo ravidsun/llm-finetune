@@ -76,7 +76,7 @@ training:
   report_to: ["tensorboard"]  # or ["wandb"] if using Weights & Biases
 
   # Evaluation
-  evaluation_strategy: "no"
+  eval_strategy: "no"
   eval_steps: 100
 
 # USAGE:

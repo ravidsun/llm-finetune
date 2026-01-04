@@ -32,7 +32,7 @@ training:
   save_steps: 100
   eval_steps: 100
   save_total_limit: 3
-  evaluation_strategy: "steps"
+  eval_strategy: "steps"
   optim: "paged_adamw_8bit"
   max_seq_length: 4096
   max_grad_norm: 0.3

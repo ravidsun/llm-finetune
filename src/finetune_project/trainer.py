@@ -242,10 +242,12 @@ class FineTuneTrainer:
             bf16=bf16,
             gradient_checkpointing=train_config.gradient_checkpointing,
             logging_steps=train_config.logging_steps,
+            logging_strategy=train_config.logging_strategy,
             save_steps=train_config.save_steps,
+            save_strategy=train_config.save_strategy,
             eval_steps=train_config.eval_steps,
-            save_total_limit=train_config.save_total_limit,
             eval_strategy=train_config.eval_strategy,  # Renamed from evaluation_strategy
+            save_total_limit=train_config.save_total_limit,
             optim=train_config.optim,
             max_grad_norm=train_config.max_grad_norm,
             group_by_length=train_config.group_by_length,
