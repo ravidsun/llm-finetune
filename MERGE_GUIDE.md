@@ -16,11 +16,18 @@ Complete guide for merging your trained LoRA adapter with the base model to crea
 
 ## Quick Start
 
-### Option 1: Automatic Merge (Recommended)
+### Local Windows (Recommended for Local Machines)
 
-```bash
-cd /workspace/llm-finetune
-bash scripts/merge.sh
+**Option 1: Double-click batch file**
+```cmd
+# Simply double-click merge.bat in Windows Explorer
+# It will auto-detect everything and guide you through
+```
+
+**Option 2: Command line**
+```cmd
+cd c:\LLM\llm-finetune
+python scripts\merge_local.py
 ```
 
 This will:
@@ -28,9 +35,17 @@ This will:
 - ✅ Find your trained adapter in `output/`
 - ✅ Merge them into `merged_model/`
 - ✅ Include tokenizer and all necessary files
+- ✅ Show progress and handle Windows paths correctly
 
-### Option 2: Manual Merge with Python Script
+### RunPod / Linux
 
+**Option 1: Automatic Merge**
+```bash
+cd /workspace/llm-finetune
+bash scripts/merge.sh
+```
+
+**Option 2: Manual Merge with Python Script**
 ```bash
 cd /workspace/llm-finetune
 
@@ -95,7 +110,45 @@ pip install transformers peft torch accelerate safetensors
 
 ## Usage Options
 
-### 1. Basic Merge (Auto-detect)
+### Local Windows Options
+
+#### 1. Basic Merge (Auto-detect)
+
+```cmd
+# Run the batch file
+merge.bat
+
+# Or use Python directly
+python scripts\merge_local.py
+```
+
+The script will automatically:
+- Detect your base model from adapter config
+- Use default paths (`./output` → `./merged_model`)
+- Show progress and file sizes
+- Handle Windows paths correctly
+
+#### 2. Custom Paths
+
+```cmd
+python scripts\merge_local.py --adapter_path ./output --output_path ./my_merged_model
+```
+
+#### 3. Specify Base Model
+
+```cmd
+python scripts\merge_local.py --base_model Qwen/Qwen2.5-7B-Instruct
+```
+
+#### 4. Force CPU (if GPU memory issues)
+
+```cmd
+python scripts\merge_local.py --device cpu
+```
+
+### RunPod / Linux Options
+
+#### 1. Basic Merge (Auto-detect)
 
 ```bash
 bash scripts/merge.sh
@@ -106,7 +159,7 @@ The script will automatically:
 - Use default paths
 - Show progress and file sizes
 
-### 2. Specify Base Model
+#### 2. Specify Base Model
 
 ```bash
 # For 7B model
@@ -119,7 +172,7 @@ bash scripts/merge.sh --base 14B
 bash scripts/merge.sh --base "custom/model-name"
 ```
 
-### 3. Custom Paths
+#### 3. Custom Paths
 
 ```bash
 bash scripts/merge.sh \
@@ -127,7 +180,7 @@ bash scripts/merge.sh \
     --output /workspace/my-merged-model
 ```
 
-### 4. Push to HuggingFace Hub
+#### 4. Push to HuggingFace Hub
 
 ```bash
 # First, login to HuggingFace
@@ -139,7 +192,7 @@ bash scripts/merge.sh \
     --hub-id username/my-finetuned-model
 ```
 
-### 5. Using Python Script Directly
+#### 5. Using Python Script Directly
 
 ```bash
 python scripts/merge_model.py \
