@@ -337,6 +337,16 @@ def merge_model(args):
     try:
         # Save the merged model
         print("   Saving model weights...")
+        print("   This may take several minutes and require significant RAM...")
+
+        # Move model to CPU before saving to free GPU memory
+        if device == "cuda":
+            print("   Moving model to CPU for saving...")
+            merged_model = merged_model.to("cpu")
+            import gc
+            torch.cuda.empty_cache()
+            gc.collect()
+
         merged_model.save_pretrained(
             str(output_path),
             max_shard_size=args.max_shard_size,
@@ -356,6 +366,13 @@ def merge_model(args):
 
     except Exception as e:
         print(f"❌ Error saving model: {e}")
+        import traceback
+        print("\nDetailed error:")
+        traceback.print_exc()
+        print("\nPossible solutions:")
+        print("  1. Free up RAM by closing other programs")
+        print("  2. Try running with --device cpu")
+        print("  3. Restart your computer and try again")
         return False
 
     # Summary
