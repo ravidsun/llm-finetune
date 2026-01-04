@@ -26,7 +26,29 @@ A production-ready pipeline for fine-tuning open-source LLMs (Llama, Qwen, Mistr
 
 ## Quick Start
 
-### RunPod/Local Installation
+### 🚀 RunPod (Automated - Recommended)
+
+**Complete automated setup in one command:**
+
+```bash
+# On RunPod, run this single command:
+curl -fsSL https://raw.githubusercontent.com/ravidsun/llm-finetune/master/scripts/runpod_auto_setup.sh | bash
+```
+
+This will automatically:
+- ✅ Install all dependencies
+- ✅ Clone repository
+- ✅ Set up directories
+- ✅ Verify GPU access
+
+**Then start training with:**
+```bash
+bash scripts/runpod_quick_train.sh
+```
+
+📖 **[Full RunPod Guide](RUNPOD_GUIDE.md)** - Step-by-step with automation
+
+### Local Installation
 
 ```bash
 # Clone the repository
@@ -38,9 +60,6 @@ pip install -e .
 
 # Install with LLM providers (for QA generation)
 pip install -e ".[llm]"
-
-# Or use the setup script on RunPod
-bash scripts/setup.sh
 ```
 
 ### 2. Prepare Your Data

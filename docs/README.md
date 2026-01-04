@@ -4,9 +4,10 @@ Complete step-by-step guides for fine-tuning and deploying LLMs.
 
 ## Quick Links
 
+- 🚀 **[RunPod Automated Guide](../RUNPOD_GUIDE.md)** - One-command setup and training
 - 🔧 **[Troubleshooting Guide](TROUBLESHOOTING.md)** - Solutions for common errors
 - 📂 **[Using Existing JSONL Files](PHASE2_DATA_PREPARATION.md#using-existing-jsonl-files)** - Skip data prep with existing data
-- 🖥️ **RunPod/Local Setup** - Follow phase-by-phase guides below
+- 🖥️ **Manual Setup** - Follow phase-by-phase guides below
 
 ## Overview
 
