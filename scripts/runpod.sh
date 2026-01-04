@@ -120,36 +120,32 @@ train() {
 
     echo "GPU: $GPU_NAME"
     echo "VRAM: ${GPU_MEMORY}MB"
+    echo "Detected VRAM: ${GPU_MEMORY} MB"
 
     # Determine optimal settings based on VRAM
+    # Default to 14B for A40/A100 GPUs (40GB+)
     if [ "$GPU_MEMORY" -lt 20000 ]; then
         BATCH_SIZE=1
         GRAD_ACCUM=16
         SEQ_LENGTH=1024
         MODEL="Qwen/Qwen2.5-7B-Instruct"
         LORA_RANK=8
-        echo -e "${YELLOW}⚠️  Low VRAM - conservative settings${NC}"
-    elif [ "$GPU_MEMORY" -lt 30000 ]; then
+        echo -e "${YELLOW}⚠️  Low VRAM (<20GB) - using 7B model with conservative settings${NC}"
+    elif [ "$GPU_MEMORY" -lt 35000 ]; then
         BATCH_SIZE=2
         GRAD_ACCUM=8
         SEQ_LENGTH=2048
         MODEL="Qwen/Qwen2.5-7B-Instruct"
         LORA_RANK=16
-        echo -e "${GREEN}✅ Good VRAM - standard 7B settings${NC}"
-    elif [ "$GPU_MEMORY" -lt 50000 ]; then
+        echo -e "${GREEN}✅ Medium VRAM (20-35GB) - using 7B model${NC}"
+    else
+        # 35GB+ VRAM: Use 14B model (A40, A100, etc.)
         BATCH_SIZE=4
         GRAD_ACCUM=4
         SEQ_LENGTH=4096
         MODEL="Qwen/Qwen2.5-14B-Instruct"
         LORA_RANK=32
-        echo -e "${GREEN}✅ High VRAM - 14B model settings${NC}"
-    else
-        BATCH_SIZE=8
-        GRAD_ACCUM=2
-        SEQ_LENGTH=4096
-        MODEL="Qwen/Qwen2.5-14B-Instruct"
-        LORA_RANK=64
-        echo -e "${GREEN}✅ Very high VRAM - optimized 14B settings${NC}"
+        echo -e "${GREEN}✅ High VRAM (35GB+) - using 14B model${NC}"
     fi
 
     # Step 2: Check for training data
