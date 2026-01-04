@@ -1,10 +1,15 @@
 # Configuration for using existing JSONL files directly
 # Use this when you already have pre-formatted training data
+#
+# Recommended GPU: A40 (46GB VRAM) or A100 40GB
+# RunPod Cost: ~$0.39/hr (A40) or ~$1.89/hr (A100)
+# Training time (10K samples): 8-14 hours
+# Estimated cost (10K samples): $3.12-$5.46 (A40)
 
 model:
-  model_name: "Qwen/Qwen2.5-7B-Instruct"
-  lora_rank: 16
-  lora_alpha: 32
+  model_name: "Qwen/Qwen2.5-14B-Instruct"
+  lora_rank: 32
+  lora_alpha: 64
   lora_dropout: 0.05
   target_modules:
     - q_proj
@@ -42,18 +47,18 @@ training:
   num_epochs: 3
   max_steps: -1
 
-  # Batch configuration
-  per_device_train_batch_size: 2
-  gradient_accumulation_steps: 8
-  # Effective batch size = 2 * 8 = 16
+  # Batch configuration (optimized for 14B on A40/A100)
+  per_device_train_batch_size: 4
+  gradient_accumulation_steps: 4
+  # Effective batch size = 4 * 4 = 16
 
-  # Learning rate
-  learning_rate: 2.0e-4
+  # Learning rate (slightly lower for larger model)
+  learning_rate: 1.5e-4
   warmup_ratio: 0.03
   lr_scheduler_type: "cosine"
 
-  # Sequence length
-  max_seq_length: 2048
+  # Sequence length (14B can handle longer sequences)
+  max_seq_length: 4096
 
   # Memory optimization
   gradient_checkpointing: true

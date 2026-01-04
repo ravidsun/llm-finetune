@@ -406,6 +406,7 @@ LangChain provides:
 ### Quick Start Guides
 
 - 🚀 **[RunPod Automated Guide](RUNPOD_GUIDE.md)** - Comprehensive automated setup (recommended)
+- 🤖 **[Model Selection Guide](docs/MODEL_GUIDE.md)** - Choose the right model with pricing & benchmarks
 - 🔧 **[Troubleshooting Guide](docs/TROUBLESHOOTING.md)** - Solutions for common errors
 
 ### Phase-by-Phase Guides
