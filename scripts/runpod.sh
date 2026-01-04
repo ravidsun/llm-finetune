@@ -243,7 +243,30 @@ EOF
 
     # Step 5: Start training
     echo ""
-    echo -e "${BLUE}[5/5] Starting training in tmux session...${NC}"
+    echo -e "${BLUE}[5/5] Starting training...${NC}"
+
+    # Check if tmux is available
+    if ! command -v tmux &> /dev/null; then
+        echo -e "${YELLOW}⚠️  tmux not found, installing...${NC}"
+        apt-get update -qq && apt-get install -y -qq tmux > /dev/null 2>&1
+
+        if ! command -v tmux &> /dev/null; then
+            echo -e "${YELLOW}⚠️  Could not install tmux, starting training directly${NC}"
+            echo "   Training will run in foreground (Ctrl+C to stop)"
+            echo ""
+
+            cd /workspace/llm-finetune
+            echo "🚀 Starting training..."
+            echo "⏱️  Started at: $(date)"
+            echo ""
+
+            python -m finetune_project train --config config.yaml 2>&1 | tee output/training.log
+
+            echo ""
+            echo "✅ Training completed at: $(date)"
+            return 0
+        fi
+    fi
 
     # Check if tmux session exists
     if tmux has-session -t training 2>/dev/null; then
