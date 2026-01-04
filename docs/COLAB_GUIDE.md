@@ -140,69 +140,50 @@ print("2. Create config file (Cell 3)")
 print("3. Start training! (Cell 4)")
 ```
 
-### Cell 2: Upload Your Data
-
-**Option A: Upload Existing JSONL**
+### Cell 2: Upload Your JSONL Training Data
 
 ```python
 # ==========================================
-# Upload Your Existing JSONL Training File
+# Upload Your Existing JSONL Training Files
 # ==========================================
+# You can upload one or multiple JSONL files!
+# Multiple files will be automatically combined during training.
 
 from google.colab import files
 import os
 
-print("📤 Upload your JSONL training file...")
+print("📤 Upload your JSONL training file(s)...")
 print("Expected format: {\"instruction\": \"...\", \"input\": \"...\", \"output\": \"...\"}")
+print("💡 Tip: You can select multiple .jsonl files to upload!")
 
 # Create directory
 !mkdir -p data/input
 
-# Upload file
+# Upload files (can select multiple)
 uploaded = files.upload()
 
-# Move to correct location
+# Move all uploaded files to input directory
+file_count = 0
 for filename in uploaded.keys():
-    !mv "{filename}" data/input/train.jsonl
-    print(f"\n✅ Uploaded: {filename}")
-    print(f"📍 Saved to: data/input/train.jsonl")
+    if filename.endswith('.jsonl'):
+        !mv "{filename}" data/input/
+        file_count += 1
+        print(f"✅ Uploaded: {filename}")
 
-# Verify file
+print(f"\n📁 Total files: {file_count}")
+print(f"📍 Location: data/input/")
+
+# Verify files
 print("\n📊 File info:")
-!wc -l data/input/train.jsonl
-print("\nFirst 3 lines:")
-!head -n 3 data/input/train.jsonl
+!ls -lh data/input/*.jsonl
+print("\nTotal training examples:")
+!wc -l data/input/*.jsonl
+
+print("\nFirst 3 lines from first file:")
+!head -n 3 data/input/*.jsonl | head -n 3
 
 print("\n✅ Data ready! Continue to Cell 3...")
-```
-
-**Option B: Create Sample Data (for testing)**
-
-```python
-# ==========================================
-# Create Sample Training Data
-# ==========================================
-
-import json
-import os
-
-# Sample data for testing
-sample_data = [
-    {"instruction": "What is machine learning?", "input": "", "output": "Machine learning is a subset of artificial intelligence that enables systems to learn and improve from experience without being explicitly programmed."},
-    {"instruction": "Explain neural networks", "input": "", "output": "Neural networks are computing systems inspired by biological neural networks. They consist of interconnected nodes (neurons) organized in layers that process and transform data."},
-    {"instruction": "What is deep learning?", "input": "", "output": "Deep learning is a subset of machine learning that uses neural networks with multiple layers to progressively extract higher-level features from raw input."},
-    {"instruction": "Define supervised learning", "input": "", "output": "Supervised learning is a machine learning approach where the model is trained on labeled data, learning to map inputs to known outputs."},
-    {"instruction": "What is a transformer?", "input": "", "output": "A transformer is a deep learning architecture that uses self-attention mechanisms to process sequential data, forming the basis of modern language models."}
-]
-
-# Save to file
-os.makedirs('data/input', exist_ok=True)
-with open('data/input/train.jsonl', 'w') as f:
-    for item in sample_data:
-        f.write(json.dumps(item) + '\n')
-
-print(f"✅ Created sample data: {len(sample_data)} examples")
-!head -n 3 data/input/train.jsonl
+print("💡 Note: All .jsonl files in data/input/ will be automatically combined")
 ```
 
 ### Cell 3: Create Configuration
@@ -401,7 +382,7 @@ Get token at: https://huggingface.co/settings/tokens
 
 ### Option A: Upload Existing JSONL (Recommended)
 
-If you already have JSONL files:
+If you already have JSONL files (single or multiple):
 
 ```python
 from google.colab import files
@@ -409,16 +390,24 @@ from google.colab import files
 # Create directory
 !mkdir -p data/input
 
-# Upload
-print("Upload your JSONL file...")
+# Upload (can select multiple files)
+print("Upload your JSONL file(s)...")
+print("💡 You can select multiple .jsonl files!")
 uploaded = files.upload()
 
-# Move to standard location
-!mv *.jsonl data/input/train.jsonl
+# Move all files to input directory
+for filename in uploaded.keys():
+    if filename.endswith('.jsonl'):
+        !mv "{filename}" data/input/
+        print(f"✅ Moved {filename} to data/input/")
 
 # Verify
-!head -n 3 data/input/train.jsonl
-!wc -l data/input/train.jsonl
+print("\n📊 Files uploaded:")
+!ls -lh data/input/*.jsonl
+print("\nTotal examples:")
+!wc -l data/input/*.jsonl
+print("\nFirst 3 lines from first file:")
+!head -n 3 data/input/*.jsonl | head -n 3
 ```
 
 **Expected format**:
@@ -426,6 +415,8 @@ uploaded = files.upload()
 {"instruction": "What is Python?", "input": "", "output": "Python is a programming language..."}
 {"instruction": "Explain loops", "input": "in Python", "output": "Loops in Python..."}
 ```
+
+**Note**: All `.jsonl` files in `data/input/` will be automatically combined during data preparation.
 
 ### Option B: Upload PDFs/DOCX
 
