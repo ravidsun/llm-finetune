@@ -122,36 +122,29 @@ train() {
     echo "VRAM: ${GPU_MEMORY}MB"
     echo "Detected VRAM: ${GPU_MEMORY} MB"
 
-    # Determine optimal settings based on VRAM
-    # Optimized for A40 (46GB) and A100 GPUs
-    if [ "$GPU_MEMORY" -lt 20000 ]; then
-        BATCH_SIZE=1
-        GRAD_ACCUM=16
-        SEQ_LENGTH=1024
-        MODEL="Qwen/Qwen2.5-7B-Instruct"
-        LORA_RANK=8
-        LORA_ALPHA=16
-        LEARNING_RATE="2.0e-4"
-        echo -e "${YELLOW}⚠️  Low VRAM (<20GB) - using 7B model with conservative settings${NC}"
-    elif [ "$GPU_MEMORY" -lt 35000 ]; then
-        BATCH_SIZE=2
-        GRAD_ACCUM=8
-        SEQ_LENGTH=2048
-        MODEL="Qwen/Qwen2.5-7B-Instruct"
-        LORA_RANK=16
-        LORA_ALPHA=32
-        LEARNING_RATE="2.0e-4"
-        echo -e "${GREEN}✅ Medium VRAM (20-35GB) - using 7B model${NC}"
+    # Configuration optimized for A40/A100 GPUs (40GB+ VRAM)
+    # Using Qwen2.5-14B-Instruct for best performance
+    MODEL="Qwen/Qwen2.5-14B-Instruct"
+    BATCH_SIZE=4
+    GRAD_ACCUM=4
+    SEQ_LENGTH=4096
+    LORA_RANK=32
+    LORA_ALPHA=64
+    LEARNING_RATE="1.5e-4"
+
+    # Verify sufficient VRAM
+    if [ "$GPU_MEMORY" -lt 40000 ]; then
+        echo -e "${RED}❌ WARNING: GPU has ${GPU_MEMORY}MB VRAM${NC}"
+        echo -e "${RED}   This configuration requires at least 40GB VRAM${NC}"
+        echo -e "${RED}   Recommended GPUs: A40 (46GB), A100 (40GB/80GB)${NC}"
+        echo ""
+        echo "Continue anyway? (y/N)"
+        read -r response
+        if [[ ! "$response" =~ ^[Yy]$ ]]; then
+            exit 1
+        fi
     else
-        # 35GB+ VRAM: Use 14B model optimized for A40/A100
-        BATCH_SIZE=4
-        GRAD_ACCUM=4
-        SEQ_LENGTH=4096
-        MODEL="Qwen/Qwen2.5-14B-Instruct"
-        LORA_RANK=32
-        LORA_ALPHA=64
-        LEARNING_RATE="1.5e-4"
-        echo -e "${GREEN}✅ High VRAM (35GB+) - using 14B model (optimized for A40/A100)${NC}"
+        echo -e "${GREEN}✅ GPU has sufficient VRAM (${GPU_MEMORY}MB) for 14B model${NC}"
     fi
 
     # Step 2: Check for training data
