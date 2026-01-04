@@ -308,24 +308,47 @@ class FineTuneTrainer:
             trainer_kwargs["eval_dataset"] = dataset["eval"]
         
         if self.data_format == "chat":
-            def formatting_func(examples):
+            # For chat format, we need to use the dataset_text_field approach
+            # Convert messages to text using the tokenizer's chat template
+            def preprocess_function(examples):
                 texts = []
                 for messages in examples["messages"]:
+                    # Add system message if configured
                     if self.config.data.system_message:
                         if not any(m.get("role") == "system" for m in messages):
                             messages = [
                                 {"role": "system", "content": self.config.data.system_message}
                             ] + list(messages)
-                    
+
+                    # Apply chat template
                     text = self.tokenizer.apply_chat_template(
                         messages,
                         tokenize=False,
                         add_generation_prompt=False
                     )
                     texts.append(text)
-                return texts
-            
-            trainer_kwargs["formatting_func"] = formatting_func
+                return {"text": texts}
+
+            # Preprocess the datasets to add the 'text' field
+            trainer_kwargs["train_dataset"] = trainer_kwargs["train_dataset"].map(
+                preprocess_function,
+                batched=True,
+                remove_columns=trainer_kwargs["train_dataset"].column_names
+            )
+            if "eval_dataset" in trainer_kwargs:
+                trainer_kwargs["eval_dataset"] = trainer_kwargs["eval_dataset"].map(
+                    preprocess_function,
+                    batched=True,
+                    remove_columns=trainer_kwargs["eval_dataset"].column_names
+                )
+
+            # Update SFTConfig to use the text field
+            sft_config = SFTConfig(
+                **training_args.to_dict(),
+                packing=self.config.training.packing,
+                dataset_text_field="text",
+            )
+            trainer_kwargs["args"] = sft_config
         
         self.trainer = SFTTrainer(**trainer_kwargs)
         
