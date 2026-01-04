@@ -1,23 +1,32 @@
-# Model Selection Guide for RunPod Fine-Tuning
+# Model Configuration Guide
 
-Complete guide to choosing and configuring LLMs for fine-tuning on RunPod.
+**This pipeline is configured exclusively for Qwen2.5-14B-Instruct on A40/A100 GPUs.**
 
-## Quick Recommendations
+## Default Configuration ⭐
 
-### 💰 Best Budget: Qwen/Qwen2.5-7B-Instruct
-- **GPU**: RTX 4090 (24GB)
-- **Cost**: $0.44/hr
-- **10K samples**: $1.76-$3.52 (4-8 hours)
+### Qwen/Qwen2.5-14B-Instruct (HARDCODED)
+- **GPU**: A40 (46GB) or A100 (40GB/80GB)
+- **Cost**: $0.39/hr (A40) | $1.89/hr (A100 40GB)
+- **10K samples**: $3.12-$5.46 (8-14 hours on A40)
+- **VRAM Required**: Minimum 40GB
 
-### ⚡ Best Performance/Value: Qwen/Qwen2.5-14B-Instruct ⭐ **CURRENT DEFAULT**
-- **GPU**: A40 (46GB)
-- **Cost**: $0.39/hr
-- **10K samples**: $3.12-$5.46 (8-14 hours)
+**Optimized Settings:**
+- Batch Size: 4
+- Gradient Accumulation: 4 (effective batch: 16)
+- LoRA Rank: 32
+- LoRA Alpha: 64
+- Learning Rate: 1.5e-4
+- Sequence Length: 4096
 
-### 🏆 Maximum Quality: Meta-Llama-3.1-70B-Instruct
-- **GPU**: A100 80GB
-- **Cost**: $2.89/hr
-- **10K samples**: $69-$116 (24-40 hours)
+---
+
+## Why 14B Model?
+
+The 14B model provides the best balance of:
+- ✅ **Superior Quality**: Significantly better than 7B models
+- ✅ **Cost Efficiency**: More cost-effective than 70B on A40
+- ✅ **Training Speed**: Faster convergence than larger models
+- ✅ **VRAM Fit**: Optimized for common A40/A100 GPUs
 
 ---
 

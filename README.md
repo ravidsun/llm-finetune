@@ -9,10 +9,10 @@ A production-ready pipeline for fine-tuning open-source LLMs (Llama, Qwen, Mistr
 
 ### Core Features
 - **Automated Setup**: One-command installation and training on RunPod
-- **Multiple Models**: Support for Llama, Qwen, Mistral, and other Hugging Face models
+- **14B Model Default**: Optimized for Qwen2.5-14B-Instruct on A40/A100 GPUs
 - **PEFT/LoRA**: Parameter-efficient fine-tuning with configurable LoRA adapters
-- **QLoRA**: 4-bit quantization for training larger models on limited VRAM
-- **GPU Auto-Detection**: Automatically optimizes settings based on available VRAM
+- **QLoRA**: 4-bit quantization for training 14B model on 40GB+ VRAM
+- **Optimized Configuration**: Hardcoded settings for best performance on A40/A100
 - **Multiple JSONL Support**: Easily use existing training data files
 
 ### LangChain Integration
@@ -250,11 +250,15 @@ data:
 
 ### 2. Recommended GPUs
 
-| Model Size | GPU | VRAM | Approx. Cost |
-|------------|-----|------|--------------|
-| 7B (QLoRA) | RTX 4090 | 24GB | $0.44/hr |
-| 14B (QLoRA) | A40 | 46GB | $0.39/hr |
-| 32B (QLoRA) | A100 40GB | 40GB | $1.89/hr |
+**This pipeline is optimized for 14B model training on high-VRAM GPUs:**
+
+| Model Size | GPU | VRAM | Approx. Cost | Status |
+|------------|-----|------|--------------|--------|
+| 14B (QLoRA) | A40 | 46GB | $0.39/hr | **✅ Default** |
+| 14B (QLoRA) | A100 40GB | 40GB | $1.89/hr | **✅ Supported** |
+| 14B (QLoRA) | A100 80GB | 80GB | $2.19/hr | **✅ Supported** |
+
+**Note:** Configuration is hardcoded for 14B model. Requires minimum 40GB VRAM.
 
 ### 3. Environment Variables
 
