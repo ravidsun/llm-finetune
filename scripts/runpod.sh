@@ -223,7 +223,7 @@ training:
   logging_dir: "/workspace/llm-finetune/output/logs"
   report_to: []
 
-  evaluation_strategy: "no"
+  eval_strategy: "no"
 EOF
 
     echo -e "${GREEN}✅ Config generated: config.yaml${NC}"

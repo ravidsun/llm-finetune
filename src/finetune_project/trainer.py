@@ -244,7 +244,7 @@ class FineTuneTrainer:
             save_steps=train_config.save_steps,
             eval_steps=train_config.eval_steps,
             save_total_limit=train_config.save_total_limit,
-            evaluation_strategy=train_config.evaluation_strategy,
+            eval_strategy=train_config.eval_strategy,  # Renamed from evaluation_strategy
             optim=train_config.optim,
             max_grad_norm=train_config.max_grad_norm,
             group_by_length=train_config.group_by_length,

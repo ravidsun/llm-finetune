@@ -48,7 +48,7 @@ class TrainingConfig:
     save_steps: int = 100
     eval_steps: int = 100
     save_total_limit: int = 3
-    evaluation_strategy: str = "steps"
+    eval_strategy: str = "steps"  # Renamed from evaluation_strategy in transformers v4.30+
     optim: str = "paged_adamw_8bit"
     max_seq_length: int = 2048
     max_grad_norm: float = 0.3
@@ -271,11 +271,15 @@ def _build_nested_config(config_dict: Dict[str, Any], key: str, config_class):
     nested_dict = config_dict.get(key, {})
     if nested_dict is None:
         nested_dict = {}
-    
+
+    # Backward compatibility: rename evaluation_strategy to eval_strategy for TrainingConfig
+    if config_class == TrainingConfig and 'evaluation_strategy' in nested_dict:
+        nested_dict['eval_strategy'] = nested_dict.pop('evaluation_strategy')
+
     # Get valid fields for the config class
     valid_fields = {f.name for f in config_class.__dataclass_fields__.values()}
     filtered_dict = {k: v for k, v in nested_dict.items() if k in valid_fields}
-    
+
     return config_class(**filtered_dict)
 
 
