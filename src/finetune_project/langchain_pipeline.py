@@ -144,15 +144,17 @@ class LangChainDataPipeline:
     def _detect_input_type(self, path: Path) -> str:
         """
         Detect input type based on files.
-        
+
         Args:
             path: Input file or directory path.
-            
+
         Returns:
             Detected type: 'json', 'pdf', or 'docx'.
         """
-        if self.data_config.input_type != "auto":
-            return self.data_config.input_type
+        # Convert to string to avoid Path object comparison issues
+        input_type_config = str(self.data_config.input_type) if self.data_config.input_type else "auto"
+        if input_type_config != "auto":
+            return input_type_config
         
         if path.is_file():
             suffix = path.suffix.lower()
