@@ -16,20 +16,134 @@ The pipeline supports three input types:
 
 ## Step 2: Prepare Your Data
 
-### Option A: JSON Format
+### Option A: JSON Format (Including Existing JSONL Files)
 
-Place your JSONL file in `/workspace/data/`:
+#### Using Existing JSONL Files
+
+If you already have pre-formatted JSONL files, you can use them directly! There are two approaches:
+
+**Approach 1: Skip Data Preparation Entirely** (Fastest)
+
+If your JSONL is already in the correct format and doesn't need augmentation:
+
+```bash
+# Create processed_data directory
+mkdir -p /workspace/processed_data
+
+# Copy your existing JSONL file
+cp /path/to/your/file.jsonl /workspace/processed_data/train.jsonl
+
+# Optional: Copy test file
+cp /path/to/your/test.jsonl /workspace/processed_data/test.jsonl
+```
+
+Then use a minimal config that points to the processed data:
+
+```yaml
+data:
+  input_path: "/workspace/processed_data"    # Already has train.jsonl
+  output_path: "/workspace/processed_data"   # Same location
+  input_type: "json"
+
+  langchain:
+    enabled: false
+
+  augmentation:
+    enabled: false
+```
+
+**Skip prepare-data and go straight to training:**
+```bash
+python -m finetune_project train --config config.yaml
+```
+
+**Approach 2: Use Existing Files with Optional Processing**
+
+If you want to apply augmentation or validation to existing JSONL files:
+
+```bash
+# Create input directory
+mkdir -p /workspace/data/input
+
+# Copy your JSONL files
+cp /path/to/your/train.jsonl /workspace/data/input/
+cp /path/to/your/test.jsonl /workspace/data/input/  # Optional
+```
+
+Use this config:
+
+```yaml
+data:
+  input_path: "/workspace/data/input"        # Contains your JSONL files
+  output_path: "/workspace/processed_data"   # Processed output
+  input_type: "json"
+
+  langchain:
+    enabled: false  # Disable document processing
+
+  augmentation:
+    enabled: true   # Optional: enable to augment your data
+    instruction_variations: true
+    num_instruction_variations: 2
+```
+
+Then run:
+```bash
+# Prepare (validates and optionally augments)
+python -m finetune_project prepare-data --config config.yaml
+
+# Train
+python -m finetune_project train --config config.yaml
+```
+
+#### JSONL Format Requirements
+
+Your JSONL file should have one of these formats:
+
+**Format 1: Instruction Format** (Recommended for SFT)
+```jsonl
+{"instruction": "What is Python?", "input": "", "output": "Python is a programming language..."}
+{"instruction": "Explain loops", "input": "in Python", "output": "Loops in Python allow..."}
+```
+
+Fields:
+- `instruction`: The task or question
+- `input`: Additional context (can be empty string)
+- `output`: The expected response
+
+**Format 2: Text Format** (For Causal LM)
+```jsonl
+{"text": "This is a complete training example with all text in one field."}
+{"text": "Another example. The model will learn to continue from any prefix."}
+```
+
+**Format 3: Conversation Format**
+```jsonl
+{"messages": [{"role": "user", "content": "Hello"}, {"role": "assistant", "content": "Hi there!"}]}
+```
+
+#### Multiple JSONL Files
+
+You can place multiple JSONL files in the input directory - they will be automatically combined:
+
+```bash
+/workspace/data/input/
+├── domain1.jsonl
+├── domain2.jsonl
+└── domain3.jsonl
+```
+
+All files will be merged during data preparation.
+
+#### Creating New JSONL Data
+
+If you're creating new data, place your JSONL file in `/workspace/data/`:
 
 ```jsonl
 {"instruction": "What is the capital of France?", "input": "", "output": "Paris"}
 {"instruction": "Explain quantum computing", "input": "", "output": "Quantum computing uses quantum bits..."}
 {"instruction": "Write a function to reverse a string", "input": "Python", "output": "def reverse_string(s):\n    return s[::-1]"}
 ```
-
-Format requirements:
-- One JSON object per line
-- Fields: `instruction`, `input`, `output`
-- `input` can be empty string if not needed
 
 ### Option B: PDF Documents
 

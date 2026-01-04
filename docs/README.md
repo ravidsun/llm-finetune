@@ -5,7 +5,7 @@ Complete step-by-step guides for fine-tuning and deploying LLMs.
 ## Quick Links
 
 - 🔧 **[Troubleshooting Guide](TROUBLESHOOTING.md)** - Solutions for common errors
-- 📂 **[Using Existing JSONL Files](USING_EXISTING_JSONL.md)** - Skip data prep with existing data
+- 📂 **[Using Existing JSONL Files](PHASE2_DATA_PREPARATION.md#using-existing-jsonl-files)** - Skip data prep with existing data
 - 🖥️ **RunPod/Local Setup** - Follow phase-by-phase guides below
 
 ## Overview
@@ -159,7 +159,7 @@ Deploy your model for production use.
 - [DIAGRAMS.md](../DIAGRAMS.md) - Mermaid flowcharts (renders on GitHub)
 
 ### Data Guides
-- [USING_EXISTING_JSONL.md](USING_EXISTING_JSONL.md) - Use pre-existing JSONL files
+- [Phase 2: Data Preparation](PHASE2_DATA_PREPARATION.md#using-existing-jsonl-files) - Use pre-existing JSONL files
 - Phase 2 guide covers creating JSONL from scratch
 
 ### Project Files

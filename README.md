@@ -57,7 +57,7 @@ cp your-data.jsonl data/train.jsonl
 python -m finetune_project init --output config.yaml --template existing_jsonl
 ```
 
-📖 **See**: [Using Existing JSONL Files](docs/USING_EXISTING_JSONL.md) for detailed guide
+📖 **See**: [Phase 2: Data Preparation](docs/PHASE2_DATA_PREPARATION.md#using-existing-jsonl-files) for detailed guide on using existing JSONL files
 
 #### Option B: Create New Data
 
