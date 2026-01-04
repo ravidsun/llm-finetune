@@ -40,13 +40,17 @@ Complete automated setup for fine-tuning LLMs on RunPod. Most steps are automate
 
 ### 1.1 Choose Your GPU
 
+**This pipeline requires high-VRAM GPUs for 14B model training:**
+
 Log into [RunPod](https://runpod.io/console/pods) and deploy a new pod:
 
-| Model Size | Recommended GPU | VRAM | Cost/Hour |
-|------------|----------------|------|-----------|
-| **7B with QLoRA** | RTX 4090 | 24GB | ~$0.44 |
-| **14B with QLoRA** | A40 | 46GB | ~$0.39 |
-| **32B with QLoRA** | A100 40GB | 40GB | ~$1.89 |
+| GPU | VRAM | Cost/Hour | Status |
+|-----|------|-----------|--------|
+| **A40** | 46GB | ~$0.39 | ✅ **Recommended** |
+| **A100 40GB** | 40GB | ~$1.89 | ✅ Supported |
+| **A100 80GB** | 80GB | ~$2.19 | ✅ Supported |
+
+**Note:** Minimum 40GB VRAM required for Qwen2.5-14B-Instruct training.
 
 ### 1.2 Pod Configuration
 
