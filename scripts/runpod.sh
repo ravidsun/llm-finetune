@@ -123,13 +123,15 @@ train() {
     echo "Detected VRAM: ${GPU_MEMORY} MB"
 
     # Determine optimal settings based on VRAM
-    # Default to 14B for A40/A100 GPUs (40GB+)
+    # Optimized for A40 (46GB) and A100 GPUs
     if [ "$GPU_MEMORY" -lt 20000 ]; then
         BATCH_SIZE=1
         GRAD_ACCUM=16
         SEQ_LENGTH=1024
         MODEL="Qwen/Qwen2.5-7B-Instruct"
         LORA_RANK=8
+        LORA_ALPHA=16
+        LEARNING_RATE="2.0e-4"
         echo -e "${YELLOW}⚠️  Low VRAM (<20GB) - using 7B model with conservative settings${NC}"
     elif [ "$GPU_MEMORY" -lt 35000 ]; then
         BATCH_SIZE=2
@@ -137,15 +139,19 @@ train() {
         SEQ_LENGTH=2048
         MODEL="Qwen/Qwen2.5-7B-Instruct"
         LORA_RANK=16
+        LORA_ALPHA=32
+        LEARNING_RATE="2.0e-4"
         echo -e "${GREEN}✅ Medium VRAM (20-35GB) - using 7B model${NC}"
     else
-        # 35GB+ VRAM: Use 14B model (A40, A100, etc.)
+        # 35GB+ VRAM: Use 14B model optimized for A40/A100
         BATCH_SIZE=4
         GRAD_ACCUM=4
         SEQ_LENGTH=4096
         MODEL="Qwen/Qwen2.5-14B-Instruct"
         LORA_RANK=32
-        echo -e "${GREEN}✅ High VRAM (35GB+) - using 14B model${NC}"
+        LORA_ALPHA=64
+        LEARNING_RATE="1.5e-4"
+        echo -e "${GREEN}✅ High VRAM (35GB+) - using 14B model (optimized for A40/A100)${NC}"
     fi
 
     # Step 2: Check for training data
@@ -175,7 +181,7 @@ train() {
 model:
   model_name: "$MODEL"
   lora_rank: $LORA_RANK
-  lora_alpha: $((LORA_RANK * 2))
+  lora_alpha: $LORA_ALPHA
   lora_dropout: 0.05
   target_modules:
     - q_proj
@@ -201,7 +207,7 @@ training:
   per_device_train_batch_size: $BATCH_SIZE
   gradient_accumulation_steps: $GRAD_ACCUM
 
-  learning_rate: 2.0e-4
+  learning_rate: $LEARNING_RATE
   warmup_ratio: 0.03
   lr_scheduler_type: "cosine"
 
@@ -224,13 +230,15 @@ EOF
 
     echo -e "${GREEN}✅ Config generated: config.yaml${NC}"
     echo ""
-    echo "Configuration Summary:"
+    echo "Configuration Summary (A40 Optimized):"
     echo "  Model: $MODEL"
     echo "  Batch Size: $BATCH_SIZE"
     echo "  Gradient Accumulation: $GRAD_ACCUM"
     echo "  Effective Batch Size: $((BATCH_SIZE * GRAD_ACCUM))"
     echo "  Max Sequence Length: $SEQ_LENGTH"
     echo "  LoRA Rank: $LORA_RANK"
+    echo "  LoRA Alpha: $LORA_ALPHA"
+    echo "  Learning Rate: $LEARNING_RATE"
 
     # Step 4: Prepare data
     echo ""
