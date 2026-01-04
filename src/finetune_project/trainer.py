@@ -170,8 +170,9 @@ class FineTuneTrainer:
         self.tokenizer = AutoTokenizer.from_pretrained(
             tokenizer_name,
             trust_remote_code=model_config.trust_remote_code,
+            model_max_length=self.config.training.max_seq_length,  # Set max sequence length
         )
-        
+
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
             self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
@@ -285,10 +286,11 @@ class FineTuneTrainer:
         dataset = self._format_dataset(dataset)
         
         training_args = self._get_training_arguments()
-        
+
+        # SFTConfig parameters (extends TrainingArguments)
+        # Note: max_seq_length is handled via model_max_length in tokenizer, not in SFTConfig
         sft_config = SFTConfig(
             **training_args.to_dict(),
-            max_seq_length=self.config.training.max_seq_length,
             packing=self.config.training.packing and self.data_format == "text",
             dataset_text_field="text" if self.data_format == "text" else None,
         )
