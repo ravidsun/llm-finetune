@@ -1,6 +1,8 @@
 # Merge Model Locally on Windows
 
-Quick guide for merging your LoRA adapter with the base model on your local Windows machine.
+Quick reference guide for merging your LoRA adapter with the base model on your local Windows machine.
+
+> 📖 **For detailed step-by-step instructions, see [MERGE_WORKFLOW.md](MERGE_WORKFLOW.md)**
 
 ## Prerequisites
 
@@ -8,18 +10,23 @@ Quick guide for merging your LoRA adapter with the base model on your local Wind
 2. **Required packages:**
    ```cmd
    pip install transformers peft torch accelerate safetensors
+
+   # If you get numpy/pandas errors:
+   pip install --upgrade --force-reinstall pandas
    ```
 
 3. **Disk space:** 30-60 GB free (depending on model size)
+4. **Downloaded adapter:** Get `output/` folder from RunPod to `c:\LLM\llm-finetune\output\`
 
-## Quick Start
+## Quick Start (TL;DR)
 
-### Option 1: Double-Click Method (Easiest)
+### Option 1: Double-Click Method (Easiest) ⭐
 
-1. Download your trained `output/` folder from RunPod
+1. Download `output/` folder from RunPod
 2. Place it at `c:\LLM\llm-finetune\output\`
-3. Double-click `merge.bat` in Windows Explorer (in `c:\LLM\llm-finetune\`)
-4. Follow the prompts
+3. Double-click `merge.bat` in `c:\LLM\llm-finetune\`
+4. Wait 15-30 minutes
+5. Find merged model in `c:\LLM\merged_model\`
 
 ### Option 2: Command Line
 
@@ -27,6 +34,8 @@ Quick guide for merging your LoRA adapter with the base model on your local Wind
 cd c:\LLM\llm-finetune
 python scripts\merge_local.py
 ```
+
+**Result:** Merged model will be in `c:\LLM\merged_model\`
 
 ## What Happens
 

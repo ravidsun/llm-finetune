@@ -411,6 +411,7 @@ LangChain provides:
 
 - 🚀 **[RunPod Automated Guide](RUNPOD_GUIDE.md)** - Comprehensive automated setup (recommended)
 - 🤖 **[Model Selection Guide](docs/MODEL_GUIDE.md)** - Choose the right model with pricing & benchmarks
+- 🔀 **[Model Merge Workflow](MERGE_WORKFLOW.md)** - Step-by-step guide for merging LoRA adapter (local Windows)
 - 🔧 **[Troubleshooting Guide](docs/TROUBLESHOOTING.md)** - Solutions for common errors
 
 ### Phase-by-Phase Guides
